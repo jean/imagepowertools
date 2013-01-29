@@ -49,7 +49,7 @@ namespace Amba.ImagePowerTools.Services
 
         public bool IsImage(string fileName)
         {
-            var extension = Path.GetExtension(fileName);
+            var extension = Path.GetExtension(fileName).Trim('.');
             return ImageBuilder.Current.GetSupportedFileExtensions().Any(x => x == extension);
         }
 

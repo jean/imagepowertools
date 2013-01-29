@@ -49,9 +49,11 @@
                         @foreach (var folder in Model.MediaFolders)
                         {
                             <tr class="folder-row">
-                                <td colspan="3">
+                                <td class="icon-col">
+                                    <span class="folder-icon"></span>
+                                </td>
+                                <td colspan="2">
                                     <a href="@Model.GetPickerUrl(folder.MediaPath)">
-                                        <span class="folder-icon"></span>
                                         <b>@folder.Name</b>
                                     </a>
                                 </td>

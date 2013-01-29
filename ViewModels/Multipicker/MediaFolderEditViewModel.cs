@@ -18,7 +18,7 @@ namespace Amba.ImagePowerTools.ViewModels.Multipicker
         public string GetPickerUrl(string folderMediaPath)
         {
             var result = string.Format(
-                "/Amba.ImagePowerTools/Index?scope={0}&mediaPath={1}",
+                "/Amba.ImagePowerTools/Multipicker/Index?scope={0}&mediaPath={1}",
                 Scope,
                 HttpUtility.HtmlEncode(folderMediaPath));
             return result;
