@@ -1,0 +1,35 @@
+﻿.imagemultipicker-dashboard-button-panel {
+    margin-bottom:4px;
+    margin-top:4px;
+}
+
+.imagemultipicker-dashboard-button-panel .button {
+    margin-right:10px;
+}
+
+.image-multipicker-dashboard {
+    border-collapse: collapse;
+    width:100%;
+}
+.image-file-preview {
+    width:100px;
+}
+
+.image-multipicker-dashboard tr {
+    border: 1px solid #EAEAEA;
+    background-color:white;
+}
+
+.image-multipicker-dashboard td {
+    vertical-align:top;
+    padding:4px;
+}
+.image-file-item-buttons {
+    text-align: right;    
+}
+
+.image-item-descr {
+    height:90%;
+    min-height: 2em;
+    width:100%;
+}

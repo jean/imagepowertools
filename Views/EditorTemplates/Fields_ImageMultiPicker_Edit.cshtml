@@ -1,0 +1,45 @@
+﻿@model Amba.ImagePowerTools.ViewModels.ImageMultiPickerFieldEditorViewModel
+@{
+    Script.Require("jQueryUI_Sortable").AtFoot();
+    Script.Include("jquery.tmpl.js");
+    Script.Include("ImageMultiPickerDashboard.js");
+    Style.Include("Dashboard.css");
+    
+    var pickerId = Guid.NewGuid().ToString("N");
+    var scope = "f" + pickerId;
+    var pickerBrowseLink = "select" + pickerId;
+    var resetLink = "reset" + pickerId; 
+    var clearLink = "clear" + pickerId;
+    var dashBoardBox = "dbb" + pickerId;
+}
+@Html.HiddenFor(x => x.Data)
+<fieldset>
+    <label>@Model.Field.DisplayName</label>
+    <div class="imagemultipicker-dashboard">
+        <div class="imagemultipicker-dashboard-button-panel">
+            <a href="javascript:void(0);" id="@(pickerBrowseLink)" class="button">@T("Select Images")</a>
+            <a href="javascript:void(0);" id="@(resetLink)" class="button">@T("Reset")</a>
+            <a href="javascript:void(0);" id="@(clearLink)" class="button">@T("Clear")</a>
+        </div>
+        <table id="@(dashBoardBox)" class="image-multipicker-dashboard">
+            <tbody>                
+            </tbody>
+        </table>
+    </div>
+</fieldset>
+@using(Script.Foot())
+{
+<script type="text/javascript">
+    $().ready(function() {
+        @(scope) = new ImageMultiPickerDashboard({
+            $clearLink: $('#@(clearLink)'),
+            $resetLink: $('#@(resetLink)'),
+            scope: '@(scope)',
+            $pickerBrowseLink: $('#@(pickerBrowseLink)'),
+            $dashBoardBox: $('#@(dashBoardBox)'),
+            originData: @(Html.Raw(Model.Data)),
+            $dataHidden: $('#@(Html.FieldIdFor(x => x.Data))')
+        });
+    });
+</script>
+}
