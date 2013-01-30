@@ -16,12 +16,13 @@ namespace Amba.ImagePowerTools.HtmlHelpers
             int width = 0, int height = 0,
             string defaultImage = "/modules/Amba.ImagePowerTools/content/image_not_found.jpg",
             bool renderImgSizeAttributes = true,
+            
             object htmlAttributes = null)
         {
-            url = ResizedImageUrl(helper, url, width, height).ToString();
-            if (string.IsNullOrWhiteSpace(url) && !string.IsNullOrWhiteSpace(defaultImage))
+            url = ResizedImageUrl(helper, url, width, height, defaultImage:defaultImage).ToString();
+            if (string.IsNullOrWhiteSpace(url))
             {
-                url = ResizedImageUrl(helper, defaultImage, width, height).ToString();
+                new HtmlString(string.Empty);
             }
             var sb = new StringBuilder();
             if (renderImgSizeAttributes)
