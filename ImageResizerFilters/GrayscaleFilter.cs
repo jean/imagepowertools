@@ -38,26 +38,24 @@ namespace Amba.ImagePowerTools.ImageResizerFilters
             if (!s.settings.WasOneSpecified(GetSupportedQuerystringKeys().ToArray())) 
                 return RequestedAction.None;
 
-            float grayscaleParam;
-            if (!float.TryParse(s.settings[FilterKey], out grayscaleParam))
-            {
-                grayscaleParam = 0.5f;
-            }
-
-            s.copyAttibutes.SetColorMatrix(new ColorMatrix(Grayscale(grayscaleParam)));
+            s.copyAttibutes.SetColorMatrix(new ColorMatrix(Grayscale()));
             return RequestedAction.None;
         }
 
-        static float[][] Grayscale(float x = 0.3f)
+        static float[][] Grayscale()
         {
-            return (new[]
+            return new[]
                 {
-                    new[] {x, x, x, 0.0f, 0.0f},
-                    new[] {x, x, x, 0.0f, 0.0f},
-                    new[] {x, x, x, 0.0f, 0.0f},
-                    new[] {0.0f, 0.0f, 0.0f, 1.0f, 0.0f},
-                    new[] {0.0f, 0.0f, 0.0f, 0.0f, 1.0f}
-                });
+                    new float[] {.3f, .3f, .3f, 0, 0},
+
+                    new float[] {.59f, .59f, .59f, 0, 0},
+
+                    new float[] {.11f, .11f, .11f, 0, 0},
+
+                    new float[] {0, 0, 0, 1, 0},
+
+                    new float[] {0, 0, 0, 0, 1}
+                };
 
         }
     }

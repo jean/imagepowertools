@@ -1,4 +1,5 @@
-﻿using Amba.ImagePowerTools.Models;
+﻿using System;
+using Amba.ImagePowerTools.Models;
 using Orchard.Data.Migration;
 
 namespace Amba.ImagePowerTools
@@ -7,7 +8,7 @@ namespace Amba.ImagePowerTools
     {
         public int Create()
         {
-            SchemaBuilder.CreateTable("ImagePowerToolsSettingsRecord",
+            SchemaBuilder.CreateTable(typeof(ImagePowerToolsSettingsRecord).Name,
                 table => table
                     .Column<int>("Id", c => c.PrimaryKey().Identity())
                     .Column<int>("MaxCacheSizeMB")
@@ -17,6 +18,14 @@ namespace Amba.ImagePowerTools
                     .Column<int>("MaxImageHeight")
                 );
             return 1;
+        }
+
+        public int UpdateFrom1()
+        {
+            SchemaBuilder.AlterTable(typeof(ImagePowerToolsSettingsRecord).Name, 
+                table => table
+                   .AddColumn<DateTime>("DeleteOldLastJobRun"));
+            return 2;
         }
     }
 }

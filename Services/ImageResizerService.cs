@@ -23,12 +23,12 @@ namespace Amba.ImagePowerTools.Services
         bool IsSupportedNonImage(string fileName);
         bool IsImage(string fileName);
 
-        string ResizeImage(
-            string url, int width = 0, int height = 0,
-            int maxWidth = 0, int maxheight = 0,
-            ScaleMode scale = ScaleMode.Both);
+        string ResizeImage(string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0, FitMode mode = FitMode.None, int quality = 0, string settings = "");
 
         string ResizeImage(string url, string settings);
+
+        void ClearCache();
+        void CacheStatistics(out long fileCount, out long totalSize);
     }
 
     public class ImageResizerService : IImageResizerService
@@ -49,8 +49,13 @@ namespace Amba.ImagePowerTools.Services
 
         public bool IsImage(string fileName)
         {
-            var extension = Path.GetExtension(fileName).Trim('.');
-            return ImageBuilder.Current.GetSupportedFileExtensions().Any(x => x == extension);
+            var ext = Path.GetExtension(fileName);
+            if (ext != null)
+            {
+                var extension = ext.Trim('.');
+                return ImageBuilder.Current.GetSupportedFileExtensions().Any(x => x == extension);
+            }
+            return false;
         }
 
         private string CreateMd5Hash(string input)
@@ -116,11 +121,26 @@ namespace Amba.ImagePowerTools.Services
             return ImageBuilder.Current.GetSupportedFileExtensions();
         }
 
-        public string ResizeImage(string url, int width = 0, int height = 0, int maxWidth = 0, int maxheight = 0,
-                                  ScaleMode scale = ScaleMode.Both)
+        public string ResizeImage(
+            string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0, FitMode mode = FitMode.None, 
+            int quality = 0,
+            string settings = "")
         {
-            var settings = GetResizeSettings(width, height, maxWidth, maxheight, scale);
-            return GetResizedUrl(url, settings);
+            var resizeSettings = new ResizeSettings(settings);
+            if (quality != 0)
+                resizeSettings.Quality = quality;
+            if (mode != FitMode.None)
+                resizeSettings.Mode = mode;
+            if (width > 0)
+                resizeSettings.Width = width;
+            if (height > 0)
+                resizeSettings.Height = height;
+            if (maxHeight > 0)
+                resizeSettings.MaxHeight = maxHeight;
+            if (maxWidth > 0)
+                resizeSettings.MaxWidth = maxWidth;
+            
+            return GetResizedUrl(url, resizeSettings);
         }
 
         public string ResizeImage(string url, string settings)
@@ -187,21 +207,6 @@ namespace Amba.ImagePowerTools.Services
             }
         }
 
-        private static ResizeSettings GetResizeSettings(
-            int width, int height, int maxWidth, int maxHeight,
-            ScaleMode scale)
-        {
-            var settings = new ResizeSettings
-                {
-                    MaxHeight = maxHeight,
-                    MaxWidth = maxWidth,
-                    Scale = scale
-                };
-
-            settings.Width = width > 0 ? width : settings.Width;
-            settings.Height = height > 0 ? height : settings.Height;
-            return settings;
-        }
 
         private static void WriteResizedImage(string cachedImageServerPath, string imageServerPath, ResizeSettings settings)
         {
@@ -332,6 +337,40 @@ namespace Amba.ImagePowerTools.Services
                     }
                 }
             }
+        }
+
+        public void ClearCache()
+        {
+            var cacheDir = new DirectoryInfo(GetServerPath(Consts.CacheFolderPath));
+            for (int i = 0; i < 10; i++)
+            {
+                try
+                {
+                    foreach (var file in cacheDir.GetFiles())
+                    {
+                        file.Delete();
+                    }
+                    foreach (var dir in cacheDir.GetDirectories())
+                    {
+                        dir.Delete(true);
+                    }
+                }
+                catch
+                {
+                }
+                return;                
+            }
+        }
+
+        public void CacheStatistics(out long fileCount, out long totalSize)
+        {
+            var cacheDir = new DirectoryInfo(GetServerPath(Consts.CacheFolderPath));
+            var allFiles = cacheDir.GetFiles("*.*", SearchOption.AllDirectories);
+            fileCount = allFiles.Count();
+            if (fileCount == 0)
+                totalSize = 0;
+            else
+                totalSize = allFiles.Sum(x => x.Length);
         }
     }
 }

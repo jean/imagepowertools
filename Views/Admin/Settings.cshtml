@@ -1,6 +1,6 @@
 ﻿@model Amba.ImagePowerTools.ViewModels.Admin.SettingsViewModel
 @{
-    Layout.Title = T("Image Power Tools settingsRecord");
+    Layout.Title = T("Image Power Tools");
 }
 
 @using(Html.BeginFormAntiForgeryPost())
@@ -8,7 +8,7 @@
     @Html.ValidationSummary()
     <h2>Frontend resizing settings</h2>
     <p>
-    <span class="hint">@T("Frontend resizer action settings (/ipt/resize)")</span>
+        <span class="hint">@T("Frontend resizer action settings (ex: /ipt/resize/media/default/lolcat.jpg?width=100)")</span>
     </p>
        <fieldset>
         <div>
@@ -19,7 +19,7 @@
     <fieldset>
         <label>@T("Maximal Image Width and Height")</label>
         @Html.TextBoxFor(m => m.MaxImageHeight) x @Html.TextBoxFor(m => m.MaxImageWidth)
-        <span class="hint">@T("This option allows to avoid huge image attacs")</span>
+        <span class="hint">@T("This option allows to avoid huge image requests from frontend")</span>
     </fieldset>
-    <input type="submit"/>
+    <input type="submit" value="@T("Save settings")"/>
 }

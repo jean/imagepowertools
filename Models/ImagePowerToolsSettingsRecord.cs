@@ -1,4 +1,6 @@
-﻿namespace Amba.ImagePowerTools.Models
+﻿using System;
+
+namespace Amba.ImagePowerTools.Models
 {
     public class ImagePowerToolsSettingsRecord
     {
@@ -8,5 +10,6 @@
         public virtual bool EnableFrontendResizeAction { get; set; }
         public virtual int MaxImageWidth { get; set; }
         public virtual int MaxImageHeight { get; set; }
+        public virtual DateTime? DeleteOldLastJobRun { get; set; }
     }
 }

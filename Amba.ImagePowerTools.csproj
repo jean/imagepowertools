@@ -109,7 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdminMenu.cs" />
-    <Compile Include="Controllers\Commands.cs" />
+    <Compile Include="Commands\Commands.cs" />
     <Compile Include="Consts.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\MultipickerController.cs" />
@@ -125,6 +125,7 @@
     <Compile Include="SwfTools\SWFReader.cs" />
     <Compile Include="SwfTools\Tag.cs" />
     <Compile Include="Tasks\CacheCleanupTask.cs" />
+    <Compile Include="ViewModels\Admin\CacheStatisticsViewModel.cs" />
     <Compile Include="ViewModels\Admin\SettingsViewModel.cs" />
     <Compile Include="ViewModels\Multipicker\BreadcrumbViewModel.cs" />
     <Compile Include="Controllers\ImageResizerController.cs" />
@@ -162,7 +163,7 @@
     <Content Include="Views\Admin\Settings.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Commands\" />
+    <Content Include="Views\Admin\Cache.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

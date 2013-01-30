@@ -18,8 +18,8 @@ namespace Amba.ImagePowerTools
             builder
                 .Add(T("Settings"), menu => menu
                     .Add(T("Image Power Tools"), "1.0", x => x
-                        .Action("Settings", "Admin", new { area = "Amba.ImagePowerTools" })
-                        .Permission(StandardPermissions.SiteOwner)
+                        .Add(T("Settings"), "1.0", a => a.Action("Settings", "Admin", new { area = "Amba.ImagePowerTools" }).Permission(StandardPermissions.SiteOwner).LocalNav())
+                        .Add(T("Cache"), "2.0", a => a.Action("Cache", "Admin", new { area = "Amba.ImagePowerTools" }).Permission(StandardPermissions.SiteOwner).LocalNav())
                     ));
         }
     }

@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Web;
 using Amba.ImagePowerTools.Extensions;
 using Amba.ImagePowerTools.Services;
+using ImageResizer;
 using Orchard;
 
 namespace Amba.ImagePowerTools.HtmlHelpers
@@ -14,53 +15,49 @@ namespace Amba.ImagePowerTools.HtmlHelpers
             this HtmlHelper helper, string url, 
             int width = 0, int height = 0,
             string defaultImage = "/modules/Amba.ImagePowerTools/content/image_not_found.jpg",
+            bool renderImgSizeAttributes = true,
             object htmlAttributes = null)
         {
-            url = ResizedImageUrl(helper, url, width, height);
+            url = ResizedImageUrl(helper, url, width, height).ToString();
             if (string.IsNullOrWhiteSpace(url) && !string.IsNullOrWhiteSpace(defaultImage))
             {
-                url = ResizedImageUrl(helper, defaultImage, width, height);
+                url = ResizedImageUrl(helper, defaultImage, width, height).ToString();
             }
             var sb = new StringBuilder();
-            if (width > 0)
-                sb.AppendFormat("width:{0}px;", width);
-            if (height > 0)
-                sb.AppendFormat("height:{0}px;", height);
-
+            if (renderImgSizeAttributes)
+            {
+                if (width > 0)
+                    sb.AppendFormat("width:{0}px; ", width);
+                if (height > 0)
+                    sb.AppendFormat("height:{0}px; ", height);
+            }
             var attributes = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
 
             var attrBuilder = new StringBuilder();
             attributes.IfNotNull(x => x.ToList().ForEach(
                 i => attrBuilder.AppendFormat(@" {0}=""{1}""", i.Key, i.Value.ToString().Replace("\"", "&quot;")
             )));
-            
             return new HtmlString(string.Format(@"<img src=""{0}"" style=""{1}"" {2}/>", url, sb, attrBuilder));
         }
 
-        public static string ResizedImageUrl(this HtmlHelper helper, string url, int width = 0, int height = 0)
+        public static IHtmlString ResizedImageUrl(
+            this HtmlHelper helper, string url, int width = 0, int height = 0,
+            string settings = "",
+            string defaultImage = "/modules/Amba.ImagePowerTools/content/image_not_found.jpg")
         {
             var urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
             if (string.IsNullOrWhiteSpace(url))
             {
-                return string.Empty;
+                return new HtmlString(string.Empty);
             }
             url = urlHelper.Content(url);
             var resizeService = new ImageResizerService(null);
-            url = resizeService.ResizeImage(url, width, height);
-            return url;
-        }
-
-        public static string ResizedImageUrl(this HtmlHelper helper, string url, string settings)
-        {
-            var urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
-            if (string.IsNullOrWhiteSpace(url))
+            url = resizeService.ResizeImage(url, width, height, quality:100, settings:settings);
+            if (string.IsNullOrWhiteSpace(url) && !string.IsNullOrWhiteSpace(defaultImage))
             {
-                return string.Empty;
+                url = resizeService.ResizeImage(defaultImage, width, height, quality: 100, settings: settings);
             }
-            url = urlHelper.Content(url);
-            var resizeService = new ImageResizerService(null);
-            url = resizeService.ResizeImage(url, settings);
-            return url;
+            return new HtmlString(url);
         }
     }
 }

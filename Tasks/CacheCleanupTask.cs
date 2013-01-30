@@ -41,6 +41,8 @@ namespace Amba.ImagePowerTools.Tasks
                     var resizeService = new ImageResizerService(_settingsService);
                     resizeService.DeleteOldCache();
                     _lastRun = DateTime.Now;
+                    _settingsService.Settings.DeleteOldLastJobRun = _lastRun;
+                    _settingsService.SaveSettings();
                 }
                 catch(Exception e)
                 {
