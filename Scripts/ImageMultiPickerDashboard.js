@@ -117,7 +117,7 @@
     
     function openPicker(mediaPath) {
         var newWin = window.open("/Amba.ImagePowerTools/Multipicker/Index?scope=" + base.options.scope + "&mediaPath=" + encodeURI(mediaPath),
-               "Select Images",
+               "Select",
                "width=450,height=600,resizable=yes,scrollbars=yes,status=yes");
         newWin.focus();
     }
