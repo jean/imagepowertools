@@ -46,11 +46,13 @@ namespace Amba.ImagePowerTools.HtmlHelpers
             string settings = "",
             string defaultImage = "/modules/Amba.ImagePowerTools/content/image_not_found.jpg")
         {
+
             var urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
             if (string.IsNullOrWhiteSpace(url))
             {
                 return new HtmlString(string.Empty);
             }
+
             url = urlHelper.Content(url);
             var resizeService = new ImageResizerService(null);
             url = resizeService.ResizeImage(url, width, height, quality:100, settings:settings);

@@ -183,6 +183,11 @@ namespace Amba.ImagePowerTools.Services
                 {
                     return "";
                 }
+
+                imageServerPath = FilterUnsupportedFiles(imageServerPath);
+                if (string.IsNullOrWhiteSpace(imageServerPath)) 
+                    return "";
+
                 var cachedImagePath = GetImageCachePath(url, settings);
                 string cachedImageServerPath = GetServerPath(cachedImagePath);
 
@@ -205,6 +210,24 @@ namespace Amba.ImagePowerTools.Services
             {
                 return string.Empty;
             }
+        }
+
+        private string FilterUnsupportedFiles(string imageServerPath)
+        {
+            string ext = GetCleanFileExtension(imageServerPath);
+            if (!SupportedFileExtensions().Contains(ext))
+            {
+                var alternativeUrl = GetServerPath(Consts.ModuleContentFolder + ext + ".png");
+                if (File.Exists(alternativeUrl))
+                {
+                    imageServerPath = alternativeUrl;
+                }
+                else
+                {
+                    return GetServerPath(Consts.ModuleContentFolder + "file.png");
+                }
+            }
+            return imageServerPath;
         }
 
 

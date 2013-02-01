@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Amba.ImagePowerTools.Services;
 using ImageResizer.Configuration;
+using Orchard.Mvc.Extensions;
 using Orchard.Themes;
 using Orchard.UI.Admin;
 
@@ -23,8 +24,6 @@ namespace Amba.ImagePowerTools.Controllers
             _settingsService = settingsService;
         }
 
-        private string ModuleContentFolder = @"/modules/Amba.ImagePowerTools/content/";
-
         public ActionResult Test()
         {
             return Content(Config.Current.GetDiagnosticsPage());
@@ -39,21 +38,6 @@ namespace Amba.ImagePowerTools.Controllers
             if (string.IsNullOrWhiteSpace(url))
                 return HttpNotFound();
 
-            string ext = _imageResizerService.GetCleanFileExtension(url);
-            if (!_imageResizerService.SupportedFileExtensions().Contains(ext))
-            {
-                var alternativeUrl = ModuleContentFolder + ext + ".png";
-                if (System.IO.File.Exists(Server.MapPath(alternativeUrl)))
-                {
-                    url = alternativeUrl;
-                }
-                else
-                {
-                    throw new ArgumentException("Invalid file extension! suported file extensions are: " +
-                                                string.Join(",", _imageResizerService.SupportedFileExtensions()));
-                }
-            }
-
             var retValImageUrl = _imageResizerService.ResizeImage(url, Request.Url.Query);
             if (string.IsNullOrWhiteSpace(retValImageUrl))
             {
@@ -63,7 +47,7 @@ namespace Amba.ImagePowerTools.Controllers
             {
                 return HttpNotFound();
             }
-            return Redirect(retValImageUrl);
+            return this.RedirectLocal(retValImageUrl);
         }
     }
 }
