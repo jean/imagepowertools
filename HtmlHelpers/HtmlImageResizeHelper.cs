@@ -4,8 +4,6 @@ using System.Web.Mvc;
 using System.Web;
 using Amba.ImagePowerTools.Extensions;
 using Amba.ImagePowerTools.Services;
-using ImageResizer;
-using Orchard;
 
 namespace Amba.ImagePowerTools.HtmlHelpers
 {
@@ -15,11 +13,11 @@ namespace Amba.ImagePowerTools.HtmlHelpers
             this HtmlHelper helper, string url, 
             int width = 0, int height = 0,
             string defaultImage = "/modules/Amba.ImagePowerTools/content/image_not_found.jpg",
+            string settings = "",
             bool renderImgSizeAttributes = true,
-            
             object htmlAttributes = null)
         {
-            url = ResizedImageUrl(helper, url, width, height, defaultImage:defaultImage).ToString();
+            url = ResizedImageUrl(helper, url, width, height, defaultImage:defaultImage, settings: settings).ToString();
             if (string.IsNullOrWhiteSpace(url))
             {
                 new HtmlString(string.Empty);

@@ -23,7 +23,7 @@ namespace Amba.ImagePowerTools.Services
         bool IsSupportedNonImage(string fileName);
         bool IsImage(string fileName);
 
-        string ResizeImage(string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0, FitMode mode = FitMode.None, int quality = 0, string settings = "");
+        string ResizeImage(string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0, int quality = 0, string settings = "");
 
         string ResizeImage(string url, string settings);
 
@@ -122,15 +122,13 @@ namespace Amba.ImagePowerTools.Services
         }
 
         public string ResizeImage(
-            string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0, FitMode mode = FitMode.None, 
+            string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0,  
             int quality = 0,
             string settings = "")
         {
             var resizeSettings = new ResizeSettings(settings);
             if (quality != 0)
                 resizeSettings.Quality = quality;
-            if (mode != FitMode.None)
-                resizeSettings.Mode = mode;
             if (width > 0)
                 resizeSettings.Width = width;
             if (height > 0)
