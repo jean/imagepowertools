@@ -1,15 +1,10 @@
 ﻿using System.Xml.Linq;
 using Amba.ImagePowerTools.Fields;
-using Amba.ImagePowerTools.Models;
 using Amba.ImagePowerTools.ViewModels;
 using Orchard;
 using Orchard.ContentManagement;
 using Orchard.ContentManagement.Drivers;
 using Orchard.ContentManagement.Handlers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace Amba.ImagePowerTools.Drivers
 {

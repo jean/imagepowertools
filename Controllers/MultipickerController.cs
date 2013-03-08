@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using Amba.ImagePowerTools.Models;
 using Amba.ImagePowerTools.Services;
@@ -10,6 +11,7 @@ using Amba.ImagePowerTools.ViewModels.Admin;
 using Amba.ImagePowerTools.ViewModels.Multipicker;
 using Orchard;
 using Orchard.Data;
+using Orchard.Environment.Configuration;
 using Orchard.Localization;
 using Orchard.Media;
 using Orchard.Media.Models;
@@ -26,15 +28,22 @@ namespace Amba.ImagePowerTools.Controllers
         private readonly IMediaService _mediaService;
         private readonly IImageResizerService _resizerService;
         private readonly ISwfService _swfService;
+        private readonly IMediaSearchService _mediaSearchService;
 
         public IOrchardServices Services { get; set; }
 
-        public MultipickerController(IOrchardServices services, ISwfService swfService, IMediaService mediaService, IImageResizerService resizerService)
+        public MultipickerController(
+            IMediaSearchService mediaSearchService,
+            IOrchardServices services, 
+            ISwfService swfService, 
+            IMediaService mediaService, 
+            IImageResizerService resizerService)
         {
             Services = services;
             _swfService = swfService;
             _mediaService = mediaService;
             _resizerService = resizerService;
+            _mediaSearchService = mediaSearchService;
             T = NullLocalizer.Instance;
         }
 
@@ -47,6 +56,39 @@ namespace Amba.ImagePowerTools.Controllers
             var publicUrl = _mediaService.GetPublicUrl(mediaPath);
             var serverPath = Server.MapPath("~" + publicUrl);
             return Directory.Exists(serverPath);
+        }
+
+        public ActionResult Search(string mediaPath, string scope, string search)
+        {
+            if (string.IsNullOrWhiteSpace(mediaPath))
+                mediaPath = string.Empty;
+            mediaPath = mediaPath.Trim();
+
+            if (!IsFolderExists(mediaPath))
+            {
+                var emptyModel = new MediaFolderEditViewModel
+                    {
+                        IsFolderNotExists = true
+                    };
+                return View("Index", emptyModel);
+            }
+
+            var searchFilter = ("*" + search + "*").Replace("**", "*");
+            var files = _mediaSearchService.FindFiles(mediaPath, searchFilter)
+                .Select(x => CreateFileViewModel(mediaPath, x));
+
+            var model = new MediaFolderEditViewModel
+            {
+                MediaFiles = files,
+                MediaFolders = new List<MediaFolder>(),
+                MediaPath = mediaPath,
+                Scope = scope,
+                BreadCrumbs = CreateBreadCrumbs(mediaPath),
+                SearchFilter = search
+            };
+            ViewData["Service"] = _mediaService;
+
+            return View("Index", model);
         }
 
         public ActionResult Index(string mediaPath, string scope)
@@ -102,13 +144,11 @@ namespace Amba.ImagePowerTools.Controllers
 
         private ImageFileViewModel CreateFileViewModel(string mediaPath, MediaFile file)
         {
-            var fileMediaPath = string.IsNullOrWhiteSpace(mediaPath) ? file.Name : mediaPath + "/" + file.Name;
             var result = new ImageFileViewModel
                 {
-                    MediaFile = file,
-                    PublicUrl = _mediaService.GetPublicUrl(fileMediaPath)
+                    MediaFile = file
                 };
-            var serverPath = Server.MapPath("~/" + result.PublicUrl);
+            var serverPath = Server.MapPath("~/" + file.MediaPath);
             result.IsImage = _resizerService.IsImage(serverPath);
             result.Extension = Path.GetExtension(serverPath);
             if (!string.IsNullOrWhiteSpace(result.Extension))
