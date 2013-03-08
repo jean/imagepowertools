@@ -1,4 +1,5 @@
-﻿using Amba.ImagePowerTools.Fields;
+﻿using System.Xml.Linq;
+using Amba.ImagePowerTools.Fields;
 using Amba.ImagePowerTools.Models;
 using Amba.ImagePowerTools.ViewModels;
 using Orchard;
@@ -55,6 +56,27 @@ namespace Amba.ImagePowerTools.Drivers
             }
             return Editor(part, field, shapeHelper);
         }
-        
+
+        protected override void Importing(ContentPart part, ImageMultiPickerField field, ImportContentContext context)
+        {
+            var imageElement = context.Data.Element(field.FieldDefinition.Name + "." + field.Name);
+            if (imageElement == null)
+            {
+                return;
+            }
+
+            var dataElement = imageElement.Element("Data");
+            if (dataElement != null)
+            {
+                field.Data = dataElement.Value;
+            }
+        }
+
+        protected override void Exporting(ContentPart part, ImageMultiPickerField field, ExportContentContext context)
+        {
+            var imageElement = context.Element(field.FieldDefinition.Name + "." + field.Name);
+            imageElement.Add(new XElement("Data", new XCData(field.Data)));
+        }
+
     }
 }
