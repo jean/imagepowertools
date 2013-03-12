@@ -120,6 +120,7 @@
     <Compile Include="ImageResizerFilters\GrayscaleFilter.cs" />
     <Compile Include="Migrations.cs" />
     <Compile Include="Models\ImagePowerToolsSettingsRecord.cs" />
+    <Compile Include="ResourceManifest.cs" />
     <Compile Include="Services\MediaSearchService.cs" />
     <Compile Include="Services\PowerToolsSettingsService.cs" />
     <Compile Include="Services\SwfService.cs" />

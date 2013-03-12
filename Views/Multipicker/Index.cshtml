@@ -132,7 +132,8 @@
         @Display.FootScripts()
         <script type="text/javascript">
             $().ready(function () {
-                var selected = window.opener.@(Model.Scope).selected();
+                var client = window.opener.@(Model.Scope);
+                var selected = client.selected ? client.selected() : [];
                 $(".file-picker-checkbox").each(function(i, el){
                     var $el = $(el);
                     var val = $el.val();
@@ -145,11 +146,14 @@
                 $(".file-picker-checkbox").change(function() {
                     var isCheckd = $(this).is(":checked");
                     var fileName = $(this).val();
-                    
                     if (isCheckd) {
-                        window.opener.@(Model.Scope).add(fileName);
+                        client.add(fileName);
                     } else {
-                        window.opener.@(Model.Scope).remove(fileName);
+                        if (client.remove)
+                            client.remove(fileName);
+                    }
+                    if (!client.isMultiselect || !client.isMultiselect()) {
+                        window.close();
                     }
                 });
             });

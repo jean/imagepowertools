@@ -91,11 +91,34 @@ namespace Amba.ImagePowerTools.Controllers
             return View("Index", model);
         }
 
+        const string MediaPathCookieKey = "AmbaImageMuliPicker.MediaPath";
+
         public ActionResult Index(string mediaPath, string scope)
         {
+            if (mediaPath == ":last")
+            {
+                var httpCookie = Request.Cookies[MediaPathCookieKey];
+                if (httpCookie != null)
+                {
+                    mediaPath = httpCookie.Value;
+                    if (!IsFolderExists(mediaPath))
+                    {
+                        mediaPath = string.Empty;
+                    }
+                }
+                else
+                {
+                    mediaPath = string.Empty;
+                }
+            }
             if (string.IsNullOrWhiteSpace(mediaPath))
                 mediaPath = string.Empty;
             mediaPath = mediaPath.Trim();
+
+            if (!string.IsNullOrWhiteSpace(mediaPath))
+            {
+                Response.Cookies.Add(new HttpCookie(MediaPathCookieKey, mediaPath){Expires = DateTime.Now.AddMonths(1)});
+            }
 
             if (!IsFolderExists(mediaPath))
             {

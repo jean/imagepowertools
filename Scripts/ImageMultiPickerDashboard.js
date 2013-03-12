@@ -6,6 +6,10 @@
         syncData();
     };
 
+    base.isMultiselect = function() {
+        return true;
+    };
+
     base.remove = function(file) {
         processDashboardItems(function($el) {
             var val = $el.val();
@@ -110,7 +114,7 @@
 
     function initSelectorButton() {
         base.options.$pickerBrowseLink.click(function () {
-            openPicker("");
+            openPicker(":last");
             return false;
         });
     }

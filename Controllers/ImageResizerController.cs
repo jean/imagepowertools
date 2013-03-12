@@ -1,11 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Amba.ImagePowerTools.Services;
 using ImageResizer.Configuration;
 using Orchard.Mvc.Extensions;
 using Orchard.Themes;
-using Orchard.UI.Admin;
 
 namespace Amba.ImagePowerTools.Controllers
 {
@@ -34,8 +31,6 @@ namespace Amba.ImagePowerTools.Controllers
             string defaultImage = "/modules/Amba.ImagePowerTools/content/image_not_found.jpg")
         {
             if (!_settingsService.Settings.EnableFrontendResizeAction && !User.Identity.IsAuthenticated)
-                return HttpNotFound();
-            if (string.IsNullOrWhiteSpace(url))
                 return HttpNotFound();
 
             var retValImageUrl = _imageResizerService.ResizeImage(url, Request.Url.Query);
