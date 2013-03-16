@@ -35,6 +35,21 @@ namespace Amba.ImagePowerTools
                     Priority = 1,
                     Route = resizeRoute
                 });
+            routes.Add(new RouteDescriptor
+            {
+                Priority = 1,
+                Route = new Route(
+                "ipt/upload",
+                new RouteValueDictionary
+                    {
+                        {"area", "Amba.ImagePowerTools"},
+                        {"controller", "Upload"},
+                        {"action", "Index"}
+                    },
+                new RouteValueDictionary(),
+                new RouteValueDictionary {{"area", "Amba.ImagePowerTools"}},
+                new MvcRouteHandler())
+            });
             return routes;
         }
     }

@@ -1,0 +1,68 @@
+﻿.table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+}
+.table-row {
+    display: table-row;
+}
+
+.table-cell {
+    display: table-cell;
+}
+
+.image-list {
+    margin-top: 10px;
+    margin-bottom: 10px;
+
+    .empty-list {
+        height:100px;
+        border: 1px solid #EAEAEA !important;
+        background-color: white;
+
+        .upload-message {
+            text-align:center;
+            vertical-align:middle;
+        }
+    }
+
+    .image-item {
+        border: 1px solid #EAEAEA !important;
+        background-color: white;
+
+        .image-preview {
+            vertical-align: middle;
+            text-align: center;
+            padding: 4px;
+
+            img {
+                display: block;
+            }
+        }
+
+        .image-fields {
+            vertical-align: top;
+            text-align: left;
+            padding: 4px;
+            width: 100%;
+
+            .filepath {
+                width:100%;
+                display:inline-block;
+            }
+
+            textarea {
+                height: 90%;
+                min-height: 2em;
+            }
+        }
+
+        .image-buttons {
+            vertical-align: top;
+            text-align: right;
+            padding-right: 8px;
+            padding-top: 4px;
+            width: 50px;
+        }
+    }
+}

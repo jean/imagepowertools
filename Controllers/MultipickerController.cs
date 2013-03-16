@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
-using System.Web.Hosting;
 using System.Web.Mvc;
-using Amba.ImagePowerTools.Models;
 using Amba.ImagePowerTools.Services;
 using Amba.ImagePowerTools.ViewModels.Admin;
 using Amba.ImagePowerTools.ViewModels.Multipicker;
 using Orchard;
-using Orchard.Data;
-using Orchard.Environment.Configuration;
 using Orchard.Localization;
 using Orchard.Media;
 using Orchard.Media.Models;
@@ -28,12 +24,12 @@ namespace Amba.ImagePowerTools.Controllers
         private readonly IMediaService _mediaService;
         private readonly IImageResizerService _resizerService;
         private readonly ISwfService _swfService;
-        private readonly IMediaSearchService _mediaSearchService;
+        private readonly IMediaFileSystemService _mediaFileSystemService;
 
         public IOrchardServices Services { get; set; }
 
         public MultipickerController(
-            IMediaSearchService mediaSearchService,
+            IMediaFileSystemService mediaFileSystemService,
             IOrchardServices services, 
             ISwfService swfService, 
             IMediaService mediaService, 
@@ -43,7 +39,7 @@ namespace Amba.ImagePowerTools.Controllers
             _swfService = swfService;
             _mediaService = mediaService;
             _resizerService = resizerService;
-            _mediaSearchService = mediaSearchService;
+            _mediaFileSystemService = mediaFileSystemService;
             T = NullLocalizer.Instance;
         }
 
@@ -74,7 +70,7 @@ namespace Amba.ImagePowerTools.Controllers
             }
 
             var searchFilter = ("*" + search + "*").Replace("**", "*");
-            var files = _mediaSearchService.FindFiles(mediaPath, searchFilter)
+            var files = _mediaFileSystemService.FindFiles(mediaPath, searchFilter)
                 .Select(x => CreateFileViewModel(mediaPath, x));
 
             var model = new MediaFolderEditViewModel

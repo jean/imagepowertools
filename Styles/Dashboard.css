@@ -1,35 +1,57 @@
-﻿.imagemultipicker-dashboard-button-panel {
-    margin-bottom:4px;
-    margin-top:4px;
+﻿.table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
 }
-
-.imagemultipicker-dashboard-button-panel .button {
-    margin-right:10px;
+.table-row {
+  display: table-row;
 }
-
-.image-multipicker-dashboard {
-    border-collapse: collapse;
-    width:100%;
+.table-cell {
+  display: table-cell;
 }
-.image-file-preview {
-    width:100px;
+.image-list {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
-
-.image-multipicker-dashboard tr {
-    border: 1px solid #EAEAEA;
-    background-color:white;
+.image-list .empty-list {
+  height: 100px;
+  border: 1px solid #EAEAEA !important;
+  background-color: white;
 }
-
-.image-multipicker-dashboard td {
-    vertical-align:top;
-    padding:4px;
+.image-list .empty-list .upload-message {
+  text-align: center;
+  vertical-align: middle;
 }
-.image-file-item-buttons {
-    text-align: right;    
+.image-list .image-item {
+  border: 1px solid #EAEAEA !important;
+  background-color: white;
 }
-
-.image-item-descr {
-    height:90%;
-    min-height: 2em;
-    width:100%;
+.image-list .image-item .image-preview {
+  vertical-align: middle;
+  text-align: center;
+  padding: 4px;
+}
+.image-list .image-item .image-preview img {
+  display: block;
+}
+.image-list .image-item .image-fields {
+  vertical-align: top;
+  text-align: left;
+  padding: 4px;
+  width: 100%;
+}
+.image-list .image-item .image-fields .filepath {
+  width: 100%;
+  display: inline-block;
+}
+.image-list .image-item .image-fields textarea {
+  height: 90%;
+  min-height: 2em;
+}
+.image-list .image-item .image-buttons {
+  vertical-align: top;
+  text-align: right;
+  padding-right: 8px;
+  padding-top: 4px;
+  width: 50px;
 }

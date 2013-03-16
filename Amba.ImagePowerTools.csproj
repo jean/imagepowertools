@@ -81,9 +81,16 @@
     <Content Include="Content\image_not_found.jpg" />
     <Content Include="Content\pdf.png" />
     <Content Include="Content\swf.png" />
+    <Content Include="Scripts\ExtraEvents.js" />
     <Content Include="Scripts\ImageMultiPickerDashboard.js" />
     <Content Include="Scripts\jquery.tmpl.js" />
-    <Content Include="Styles\Dashboard.css" />
+    <Content Include="Scripts\MultipickerDashboard.js" />
+    <Content Include="Styles\dashboard.css">
+      <DependentUpon>dashboard.less</DependentUpon>
+    </Content>
+    <Content Include="Styles\dashboard.min.css">
+      <DependentUpon>dashboard.less</DependentUpon>
+    </Content>
     <Content Include="Styles\img\folder.gif" />
     <Content Include="Styles\MultiPicker.css" />
     <Content Include="Web.config" />
@@ -116,12 +123,13 @@
     <Compile Include="Consts.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\MultipickerController.cs" />
+    <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Extensions\IntExtension.cs" />
     <Compile Include="ImageResizerFilters\GrayscaleFilter.cs" />
     <Compile Include="Migrations.cs" />
     <Compile Include="Models\ImagePowerToolsSettingsRecord.cs" />
     <Compile Include="ResourceManifest.cs" />
-    <Compile Include="Services\MediaSearchService.cs" />
+    <Compile Include="Services\MediaFileSystemService.cs" />
     <Compile Include="Services\PowerToolsSettingsService.cs" />
     <Compile Include="Services\SwfService.cs" />
     <Compile Include="SwfHeaderReader.cs" />
@@ -153,10 +161,7 @@
     <Compile Include="ViewModels\Multipicker\MediaFolderEditViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\EditorTemplates\Fields_ImageMultiPicker_Edit.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Fields_ImageMultiPicker.cshtml" />
+    <Content Include="Views\EditorTemplates\Fields_ImageMultiPicker_Edit1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Placement.info" />
@@ -169,6 +174,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Admin\Cache.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Fields_ImageMultiPicker.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\EditorTemplates\Fields_ImageMultiPicker_Edit.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Styles\dashboard.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

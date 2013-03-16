@@ -1,5 +1,6 @@
 ﻿using System.Xml.Linq;
 using Amba.ImagePowerTools.Fields;
+using Amba.ImagePowerTools.Services;
 using Amba.ImagePowerTools.ViewModels;
 using Orchard;
 using Orchard.ContentManagement;
@@ -8,13 +9,13 @@ using Orchard.ContentManagement.Handlers;
 
 namespace Amba.ImagePowerTools.Drivers
 {
-    public class ImageMultiPickerFieldDriver : FieldDriverBase<ImageMultiPickerField> 
+    public class ImageMultiPickerFieldDriver : FieldDriverBase<ImageMultiPickerField>
     {
-        private IOrchardServices _services { get; set; }
+        private readonly IMediaFileSystemService _mediaFileSystemService;
 
-        public ImageMultiPickerFieldDriver(IOrchardServices services)
+        public ImageMultiPickerFieldDriver(IMediaFileSystemService mediaFileSystemService)
         {
-            _services = services;
+            _mediaFileSystemService = mediaFileSystemService;
         }
 
         protected override DriverResult Display(ContentPart part, ImageMultiPickerField field, string displayType, dynamic shapeHelper)
@@ -34,7 +35,8 @@ namespace Amba.ImagePowerTools.Drivers
                     var viewModel = new ImageMultiPickerFieldEditorViewModel
                     {
                         Field = field,
-                        Data = string.IsNullOrWhiteSpace(field.Data) ? "[]" : field.Data
+                        Data = string.IsNullOrWhiteSpace(field.Data) ? "[]" : field.Data,
+                        FieldFolderName = _mediaFileSystemService.GetMediaFolderBase() + "/Amba.ImagePowerTools/" + part.Id + "_" + field.Name
                     };
 
                     return shapeHelper.EditorTemplate(TemplateName: "Fields_ImageMultiPicker_Edit", Model: viewModel, Prefix: GetPrefix(field, part));

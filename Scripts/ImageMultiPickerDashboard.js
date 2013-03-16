@@ -1,5 +1,6 @@
 ﻿function ImageMultiPickerDashboard(options) {
     var base = this;
+    
 
     base.add = function(file) {
         renderFileItem(file);

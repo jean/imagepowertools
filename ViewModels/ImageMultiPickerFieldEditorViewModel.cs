@@ -10,5 +10,6 @@ namespace Amba.ImagePowerTools.ViewModels
     {
         public string Data { get; set; }
         public ImageMultiPickerField Field { get; set; }
+        public string FieldFolderName { get; set; }
     }
 }

@@ -1,0 +1,141 @@
+﻿@model Amba.ImagePowerTools.ViewModels.ImageMultiPickerFieldEditorViewModel
+@{
+    Script.Require("jQueryUI_Sortable").AtFoot();
+    Script.Include("jquery.tmpl.js");
+    Script.Include("ImageMultiPickerDashboard.js");
+    Style.Include("Dashboard.css");
+    
+    var pickerId = Guid.NewGuid().ToString("N");
+    var scope = "f" + pickerId;
+    var pickerBrowseLink = "select" + pickerId;
+    var resetLink = "reset" + pickerId; 
+    var clearLink = "clear" + pickerId;
+    var dashBoardBox = "dbb" + pickerId;
+}
+
+@Html.HiddenFor(x => x.Data)
+<fieldset>
+    <label>@Model.Field.DisplayName</label>
+    <div class="imagemultipicker-dashboard">
+        <div class="imagemultipicker-dashboard-button-panel">
+            <a href="javascript:void(0);" id="@(pickerBrowseLink)" class="button">@T("Select Images")</a>
+            <a href="javascript:void(0);" id="@(resetLink)" class="button">@T("Reset")</a>
+            <a href="javascript:void(0);" id="@(clearLink)" class="button">@T("Clear")</a>
+        </div>
+        <table id="@(dashBoardBox)" class="image-multipicker-dashboard">
+            <tbody>                
+            </tbody>
+        </table>
+    </div>
+</fieldset>
+
+<div class="download-block-@(pickerId)">
+    Move here
+</div>
+<style>
+    .download-block-@(pickerId) {
+        width:100%;
+        height: 300px;
+        border: 1px solid black;
+    }
+    .dragover {
+        border: 1px solid yellow;
+    }
+</style>
+
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $().ready(function() {
+            @(scope) = new ImageMultiPickerDashboard({
+                $clearLink: $('#@(clearLink)'),
+                $resetLink: $('#@(resetLink)'),
+                scope: '@(scope)',
+                $pickerBrowseLink: $('#@(pickerBrowseLink)'),
+                $dashBoardBox: $('#@(dashBoardBox)'),
+                originData: @(Html.Raw(Model.Data)),
+                $dataHidden: $('#@(Html.FieldIdFor(x => x.Data))')
+            });
+        });
+    </script>
+    <script>
+        if ( !FileList.prototype.forEach ) {
+            FileList.prototype.forEach = function(fn, scope) {
+                for (var i = 0, len = this.length; i < len; ++i) {
+                    fn.call(scope, this[i], i, this);
+                }
+            };
+        }
+        if (typeof(window.FileReader) == 'undefined') {
+            alert('Не поддерживается браузером!');
+        }
+        $().ready(function() {
+            var $uploadArea = $('.download-block-@(pickerId)');
+
+            var onDragEnter = function(event) {
+                event.preventDefault();
+                $uploadArea.addClass("dragover");
+            };
+            var onDragOver = function(event) {
+                event.preventDefault();
+                if (!$uploadArea.hasClass("dragover"))
+                    $uploadArea.addClass("dragover");
+            };
+            var onDragLeave = function(event) {
+                event.preventDefault();
+                $uploadArea.removeClass("dragover");
+            };
+            var uploadProgress = function(event) {
+                var percent = parseInt(event.loaded / event.total * 100);
+                console.log('Загрузка: ' + percent + '%');
+            };
+
+            var stateChange = function(event) {
+                if (event.target.readyState == 4) {
+                    if (event.target.status == 200) {
+                        console.log('Загрузка успешно завершена!');
+                    } else {
+                        console.log('Произошла ошибка!');
+                        $uploadArea.addClass('error');
+                    }
+                }
+            };
+
+            var uploadFile = function(file) {
+                var xhr = new XMLHttpRequest();
+                xhr.upload.addEventListener('progress', uploadProgress, false);
+                xhr.onreadystatechange = stateChange;
+                xhr.open('POST', '/ipt/upload');
+               
+                xhr.setRequestHeader("Cache-Control", "no-cache");
+                xhr.setRequestHeader("Connection", "keep-alive");
+                
+                xhr.setRequestHeader('X-FILE-NAME', file.name);
+                var fd = new FormData();
+                fd.append("file", file);
+                xhr.send(fd);
+                
+            };
+
+            var onDrop = function(event) {
+                event.preventDefault();
+                $uploadArea.removeClass("dragover");
+                event.originalEvent.dataTransfer.files.forEach(function(file) {
+                    uploadFile(file);
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $uploadArea.append(['<img src="', e.target.result,'" title="', file.name, '" width="50" />'].join(''));
+                    };
+                    reader.readAsDataURL(file);
+                });
+                console.log();
+            };
+            $uploadArea
+                .on("dragenter", onDragEnter)
+                .on("dragover", onDragOver)
+                .on("dragleave", onDragLeave)
+                .on("drop", onDrop);
+        });
+        
+    </script>
+}
