@@ -34,17 +34,19 @@
 
         };
 
-        $scope.onDragEnter = function() {
-
+        $scope.onDragEnter = function($event) {
+            $scope.dragonClass = 'dragon';
         };
-        $scope.onDragOver = function() {
-
+        
+        $scope.onDragOver = function ($event) {
+            $scope.dragonClass = 'dragon';
         };
-        $scope.onDragLeave = function() {
-
+        
+        $scope.onDragLeave = function($event) {
+            $scope.dragonClass = '';
         };
         $scope.onDrop = function($event) {
-
+            $scope.dragonClass = '';
             $event.originalEvent.dataTransfer.files.forEach(function(file) {
                 uploadFile(file);
             });
@@ -58,7 +60,6 @@
                 }
             }
         }
-
 
         var uploadFile = function(file) {
 
@@ -92,7 +93,7 @@
                             $scope.data.push({ file: self.fieldFolder + "/" + file.name });
                         });
                     } else {
-                        console.log('Произошла ошибка!');
+                        ///TODO: do something on download error
                     }
 
                 }
@@ -111,9 +112,7 @@
             fd.append("folder", self.fieldFolder);
             fd.append("file", file);
             xhr.send(fd);
-
         };
-
 
         function initPickerClient() {
             if (window[self.pickerId]) {
@@ -139,7 +138,6 @@
                     $scope.$apply(function() {
                         removeFile(file);
                     });
-
                 }
             };
         }
