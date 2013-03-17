@@ -3,22 +3,57 @@
     var module = angular.module('CustomFieldsConfiguration', ['ui']);
 
     var controllers = {};
-    controllers.CustomFieldsConfigurationCtrl = function ($scope, customFields, options) {
+    controllers.CustomFieldsConfigurationCtrl = function($scope, customFields, options) {
         var self = this;
         $scope.customFields = customFields;
-        
-        $scope.addField = function (fieldName, fieldDisplayName, fieldType) {
-            
-            var position = getFieldPosition(fieldName);
-            if (position >= 0) {
-                
-            }
+
+        $scope.addField = function(formName) {
+            var form = $scope[formName];
+            if (!form.$valid)
+                return;
 
             $scope.customFields.push({
-                name: fieldName,
-                displayName: fieldDisplayName,
-                type: fieldType
+                name: $.trim($scope.fieldName),
+                displayName: $.trim($scope.fieldDisplayName),
+                type: $scope.fieldType
             });
+            $scope.resetForm(formName, { 'fieldName': '', 'fieldDisplayName': '', fieldType: 'text' });
+        };
+
+        $scope.resetForm = function(formName, defaults) {
+            $('form[name=' + formName + '], form[name=' + formName + '] .ng-dirty').removeClass('ng-dirty').addClass('ng-pristine');
+            var form = $scope[formName];
+            form.$dirty = false;
+            for (var field in form)
+                if (form[field].$pristine === false)
+                    form[field].$pristine = true;
+
+            if (form[field].$dirty === true)
+                form[field].$dirty = false;
+
+
+            if (defaults)
+                for (var d in defaults)
+                    $scope[d] = defaults[d];
+        };
+
+        $scope.nameIsUniq = function (fieldName) {
+            fieldName = $.trim(fieldName);
+            var position = getFieldPosition(fieldName);
+            if (position >= 0)
+                return false;
+            return true;
+        };
+
+        $scope.nameIsNotFile = function(fieldName) {
+            if (fieldName == "file") {
+                return false;
+            }
+            return true;
+        };
+
+        $scope.nameIsNotEmpty = function(fieldName) {
+            return $.trim(fieldName).length > 0;
         };
 
         function getFieldPosition(fieldName) {

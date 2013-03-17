@@ -9,11 +9,6 @@
 .table-cell {
   display: table-cell;
 }
-form.ng-dirty input.ng-invalid {
-  border: 1px solid red;
-  line-height: 16px;
-  padding: 2px;
-}
 .upload-wrapper {
   padding: 1px;
   border: 1px solid #fff;
@@ -74,6 +69,9 @@ form.ng-dirty input.ng-invalid {
 }
 .image-list .image-item .image-fields .desc-textarea {
   min-height: 2em;
+}
+.image-list .image-item .image-fields .descr-text {
+  width: 99%;
 }
 .image-list .image-item .image-buttons {
   vertical-align: top;

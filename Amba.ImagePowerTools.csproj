@@ -90,6 +90,12 @@
     <Content Include="Styles\dashboard.min.css">
       <DependentUpon>dashboard.less</DependentUpon>
     </Content>
+    <Content Include="Styles\fields-configuration.css">
+      <DependentUpon>fields-configuration.less</DependentUpon>
+    </Content>
+    <Content Include="Styles\fields-configuration.min.css">
+      <DependentUpon>fields-configuration.less</DependentUpon>
+    </Content>
     <Content Include="Styles\img\folder.gif" />
     <Content Include="Styles\MultiPicker.css" />
     <Content Include="Web.config" />
@@ -184,6 +190,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\DefinitionTemplates\ImageMultiPickerFieldSettings.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Styles\fields-configuration.less" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
