@@ -81,6 +81,7 @@
     <Content Include="Content\image_not_found.jpg" />
     <Content Include="Content\pdf.png" />
     <Content Include="Content\swf.png" />
+    <Content Include="Scripts\CustomFieldsConfiguration.js" />
     <Content Include="Scripts\ExtraEvents.js" />
     <Content Include="Scripts\MultipickerDashboard.js" />
     <Content Include="Styles\dashboard.css">
@@ -159,9 +160,6 @@
     <Compile Include="Services\ResizeSettingTypes.cs" />
     <Compile Include="ViewModels\ImageMultiPickerFieldEditorViewModel.cs" />
     <Compile Include="ViewModels\Multipicker\MediaFolderEditViewModel.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\EditorTemplates\Fields_ImageMultiPicker_Edit1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Placement.info" />

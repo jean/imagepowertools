@@ -11,6 +11,13 @@
     display: table-cell;
 }
 
+form.ng-dirty {
+    input.ng-invalid {
+        border: 1px solid red;
+        line-height:16px;
+        padding:2px;
+    }
+}
 
 .upload-wrapper {
     padding:1px;
@@ -84,9 +91,7 @@
                 width: 100%;
                 display: inline-block;
             }
-
-            textarea {
-                height: 90%;
+            .desc-textarea {                
                 min-height: 2em;
             }
         }

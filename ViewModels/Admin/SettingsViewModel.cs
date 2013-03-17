@@ -28,6 +28,5 @@ namespace Amba.ImagePowerTools.ViewModels.Admin
         [Required]
         [DisplayName("Maximal Image Height")]
         public int MaxImageHeight { get; set; }
-
     }
 }

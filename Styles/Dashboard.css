@@ -9,6 +9,11 @@
 .table-cell {
   display: table-cell;
 }
+form.ng-dirty input.ng-invalid {
+  border: 1px solid red;
+  line-height: 16px;
+  padding: 2px;
+}
 .upload-wrapper {
   padding: 1px;
   border: 1px solid #fff;
@@ -67,8 +72,7 @@
   width: 100%;
   display: inline-block;
 }
-.image-list .image-item .image-fields textarea {
-  height: 90%;
+.image-list .image-item .image-fields .desc-textarea {
   min-height: 2em;
 }
 .image-list .image-item .image-buttons {

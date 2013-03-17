@@ -157,6 +157,8 @@
             return input.replace(/^\/Media\/Default\//g, '');
         };
     });
+    
+    
 
 
     if (!FileList.prototype.forEach) {

@@ -30,6 +30,7 @@ namespace Amba.ImagePowerTools.Settings
             if (updateModel.TryUpdateModel(model, "ImageMultiPickerFieldSettings", null, null))
             {
                 builder.WithSetting("ImageMultiPickerFieldSettings.Hint", model.Hint);
+                builder.WithSetting("ImageMultiPickerFieldSettings.CustomFields", model.CustomFields);
                 builder.WithSetting("ImageMultiPickerFieldSettings.PreviewWidth",
                                     model.PreviewWidth.ToString(CultureInfo.InvariantCulture));
             }

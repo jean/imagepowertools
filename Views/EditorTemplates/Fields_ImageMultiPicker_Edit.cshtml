@@ -1,7 +1,7 @@
 ﻿@model Amba.ImagePowerTools.ViewModels.ImageMultiPickerFieldEditorViewModel
 @{
     Script.Include("angular.min.js").AtHead();
-    Script.Include("angular-ui.min").AtHead();
+    Script.Include("angular-ui.min.js").AtHead();
     Script.Include("MultipickerDashboard.js").AtHead();
     Script.Include("ExtraEvents.js").AtHead();
     Style.Include("dashboard.css").AtHead();
@@ -34,7 +34,28 @@
                         </div>
                         <div class="table-cell image-fields">
                             <span class="filepath">{{image.file | filename}}</span>
-                            <textarea data-ng-model="image.descr" rows="1"></textarea>
+                            
+                            
+                            @foreach (var customField in Model.Settings.CustomFieldsList)
+                            {
+                                if (!string.IsNullOrWhiteSpace(customField.DisplayName))
+                                {
+                                    <span class="display-name">@(customField.DisplayName)</span>
+                                }
+                                switch (customField.Type)
+                                {
+                                    case "textarea":
+                                        <textarea class="desc-textarea" data-ng-model="image.@(customField.Name)" rows="1"></textarea>
+                                        break;
+                                    case "text":
+                                        <input class="descr-text" type="text" data-ng-model="image.@(customField.Name)"/>
+                                        break;
+                                }
+                            }
+                                
+                            
+                            
+
                         </div>
                         <div class="table-cell image-buttons">
                             <a href="" ng-click="deleteImage(image.file)">@T("Delete")</a>
