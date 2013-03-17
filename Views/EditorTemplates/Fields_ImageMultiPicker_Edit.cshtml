@@ -1,13 +1,11 @@
 ﻿@model Amba.ImagePowerTools.ViewModels.ImageMultiPickerFieldEditorViewModel
-@using (Script.Head())
-{    
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.5/angular.min.js" type="text/javascript"></script>
-    <script src="https://raw.github.com/angular-ui/angular-ui/master/build/angular-ui.min.js" type="text/javascript"></script>
-    <script src="/Modules/Amba.ImagePowerTools/Scripts/MultipickerDashboard.js"  type="text/javascript"></script>
-    <script src="/Modules/Amba.ImagePowerTools/Scripts/ExtraEvents.js"  type="text/javascript"></script>
-    <link href="/Modules/Amba.ImagePowerTools/Styles/dashboard.css" type="text/css" rel="stylesheet"/>  
-}
 @{
+    Script.Include("angular.min.js").AtHead();
+    Script.Include("angular-ui.min").AtHead();
+    Script.Include("MultipickerDashboard.js").AtHead();
+    Script.Include("ExtraEvents.js").AtHead();
+    Style.Include("dashboard.css").AtHead();
+
     Script.Require("jQueryUI_Sortable").AtHead();
     var pickerId = Guid.NewGuid().ToString("N").Substring(0, 6);
 }
@@ -31,8 +29,8 @@
                 >      
                 <ul class="table image-list" ng-model="data" ui:sortable>
                     <li class="table-row image-item" data-ng-repeat="image in data" >
-                        <div class="table-cell image-preview" style="width:100px;">
-                            <img ng-src="/ipt/resize{{image.file}}?width=100" alt="" style="width:100px;"/>
+                        <div class="table-cell image-preview" style="width:@(Model.Settings.PreviewWidth)px;">
+                            <img ng-src="/ipt/resize{{image.file}}?width=@(Model.Settings.PreviewWidth)" alt="" style="width:@(Model.Settings.PreviewWidth)px;"/>
                         </div>
                         <div class="table-cell image-fields">
                             <span class="filepath">{{image.file | filename}}</span>
@@ -61,7 +59,7 @@
     </div>
 </fieldset>
 
-@using(Script.Foot())
+@using (Script.Foot())
 {
     <script type="text/javascript">
         angular.module('app_@(pickerId)', ['MultipickerDashboard', 'ExtraEvents', 'ui'])

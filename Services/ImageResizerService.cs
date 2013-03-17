@@ -52,7 +52,7 @@ namespace Amba.ImagePowerTools.Services
             var ext = Path.GetExtension(fileName);
             if (ext != null)
             {
-                var extension = ext.Trim('.');
+                var extension = ext.Trim('.').ToLower();
                 return ImageBuilder.Current.GetSupportedFileExtensions().Any(x => x == extension);
             }
             return false;

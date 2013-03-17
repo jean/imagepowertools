@@ -1,0 +1,15 @@
+﻿@model Amba.ImagePowerTools.Settings.ImageMultiPickerFieldSettings
+
+<fieldset>
+    <div>
+        <label for="@Html.FieldIdFor(m => m.PreviewWidth)">@T("Width for image preview")</label>
+        @Html.TextBoxFor(m => m.PreviewWidth)
+    </div>
+</fieldset>
+
+<fieldset>
+    <label for="@Html.FieldIdFor(m => m.Hint)">@T("Help text")</label>
+    @Html.TextAreaFor(m => m.Hint, new { @class = "textMedium", rows = "5" } )
+    <span class="hint">@T("The help text is written under the field when authors are selecting content items.")</span>
+    @Html.ValidationMessageFor(m => m.Hint)
+</fieldset>

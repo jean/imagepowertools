@@ -130,6 +130,8 @@
     <Compile Include="Services\MediaFileSystemService.cs" />
     <Compile Include="Services\PowerToolsSettingsService.cs" />
     <Compile Include="Services\SwfService.cs" />
+    <Compile Include="Settings\ImageMultiPickerFieldEditorEvents.cs" />
+    <Compile Include="Settings\ImageMultiPickerFieldSettings.cs" />
     <Compile Include="SwfHeaderReader.cs" />
     <Compile Include="SwfTools\Rect.cs" />
     <Compile Include="SwfTools\SWFFile.cs" />
@@ -181,6 +183,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Styles\dashboard.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\DefinitionTemplates\ImageMultiPickerFieldSettings.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
