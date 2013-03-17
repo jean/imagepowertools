@@ -15,6 +15,7 @@ form.ng-dirty input.ng-invalid {
 }
 .custom-field-row {
   border: 1px solid #BDBCBC;
+  background: white;
 }
 .name-cell {
   padding-right: 20px;
