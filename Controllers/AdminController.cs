@@ -21,14 +21,7 @@ namespace Amba.ImagePowerTools.Controllers
         {
             var viewModel = new SettingsViewModel(_settingsService.Settings);
             return View(viewModel);
-        }
-
-        public ActionResult Cache()
-        {
-            var viewModel = new CacheStatisticsViewModel(_settingsService.Settings);
-            _resizerService.CacheStatistics(out viewModel.FilesCount, out viewModel.TotalSize);
-            return View(viewModel);
-        }
+        }       
 
         [HttpPost]
         public ActionResult Settings(SettingsViewModel viewModel)
@@ -38,8 +31,16 @@ namespace Amba.ImagePowerTools.Controllers
             _settingsService.Settings.EnableFrontendResizeAction = viewModel.EnableFrontendResizeAction;
             _settingsService.Settings.MaxImageHeight = viewModel.MaxImageHeight;
             _settingsService.Settings.MaxImageWidth = viewModel.MaxImageWidth;
+            _settingsService.Settings.EnableContentItemFolderCleanup = viewModel.EnableContentItemFolderCleanup;
             _settingsService.SaveSettings();
             return RedirectToAction("Settings");
+        }
+
+        public ActionResult Cache()
+        {
+            var viewModel = new CacheStatisticsViewModel(_settingsService.Settings);
+            _resizerService.CacheStatistics(out viewModel.FilesCount, out viewModel.TotalSize);
+            return View(viewModel);
         }
 
         [HttpPost]

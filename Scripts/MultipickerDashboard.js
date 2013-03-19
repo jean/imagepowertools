@@ -6,20 +6,18 @@
     controllers.DashboardCtrl = function($scope, data, options) {
         var self = this;
         self.originData = data;
+        self.options = options;
         self.pickerId = "picker_" + options.id;
         self.fieldFolder = options.fieldFolder;
 
         $scope.data = data;
         $scope.uploads = [];
 
-        $scope.test = function() {
-            alert('bi');
-        };
-
         $scope.selectImages = function() {
             initPickerClient();
             openPicker(":last", self.pickerId);
         };
+      
 
         $scope.reset = function() {
             $scope.data = originData;
@@ -31,7 +29,6 @@
 
         $scope.deleteImage = function(file) {
             removeFile(file);
-
         };
 
         $scope.onDragEnter = function($event) {
@@ -64,7 +61,7 @@
         var uploadFile = function(file) {
 
             $scope.uploads.push({ file: file.name, progress: 0 });
-
+            
             var uploadProgress = function(event) {
                 var percent = parseInt(event.loaded / event.total * 100);
                 $scope.$apply(function() {
@@ -143,14 +140,33 @@
         }
 
         function openPicker(mediaPath, clientId) {
-            var newWin = window.open("/Amba.ImagePowerTools/Multipicker/Index?scope=" + clientId + "&mediaPath=" + encodeURI(mediaPath),
+            var newWin = window.open(self.options.pickerWindowUrl + "?scope=" + clientId + "&mediaPath=" + encodeURI(mediaPath),
                 "Select",
                 "width=450,height=600,resizable=yes,scrollbars=yes,status=yes");
             newWin.focus();
         }
+       /*
+        $scope.dragStart = function (e, ui) {
+            ui.item.data('start', ui.item.index());
+        };
 
+        $scope.dragEnd = function (e, ui) {
+            var start = ui.item.data('start'),
+                end = ui.item.index();
+
+            $scope.data.splice(end, 0,
+                $scope.data.splice(start, 1)[0]);
+
+            $scope.$apply();
+        };
+
+        $('#selected_images_' + options.id).sortable({
+            start: $scope.dragStart,
+            update: $scope.dragEnd
+        }); */
     };
     multipickerModule.controller(controllers);
+   
 
     multipickerModule.filter('filename', function() {
         return function(input) {
@@ -159,9 +175,7 @@
     });
     
     
-
-
-    if (!FileList.prototype.forEach) {
+    if (FileList && !FileList.prototype.forEach) {
         FileList.prototype.forEach = function(fn, scope) {
             for (var i = 0, len = this.length; i < len; ++i) {
                 fn.call(scope, this[i], i, this);

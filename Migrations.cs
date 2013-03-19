@@ -27,5 +27,13 @@ namespace Amba.ImagePowerTools
                    .AddColumn<DateTime>("DeleteOldLastJobRun"));
             return 2;
         }
+
+        public int UpdateFrom2()
+        {
+            SchemaBuilder.AlterTable(typeof(ImagePowerToolsSettingsRecord).Name, 
+                table => table
+                   .AddColumn<bool>("EnableContentItemFolderCleanup", x => x.WithDefault(true)));
+            return 3;
+        }
     }
 }

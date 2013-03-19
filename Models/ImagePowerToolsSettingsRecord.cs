@@ -11,5 +11,6 @@ namespace Amba.ImagePowerTools.Models
         public virtual int MaxImageWidth { get; set; }
         public virtual int MaxImageHeight { get; set; }
         public virtual DateTime? DeleteOldLastJobRun { get; set; }
+        public virtual bool EnableContentItemFolderCleanup { get; set; }
     }
 }

@@ -17,6 +17,7 @@ namespace Amba.ImagePowerTools.ViewModels.Admin
             EnableFrontendResizeAction = settingsRecord.EnableFrontendResizeAction;
             MaxImageWidth = settingsRecord.MaxImageWidth;
             MaxImageHeight = settingsRecord.MaxImageHeight;
+            EnableContentItemFolderCleanup = settingsRecord.EnableContentItemFolderCleanup;
         }
 
         [Required]
@@ -28,5 +29,8 @@ namespace Amba.ImagePowerTools.ViewModels.Admin
         [Required]
         [DisplayName("Maximal Image Height")]
         public int MaxImageHeight { get; set; }
+
+        [Required]
+        public bool EnableContentItemFolderCleanup { get; set; }
     }
 }

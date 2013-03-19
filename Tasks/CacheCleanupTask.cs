@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using Amba.ImagePowerTools.Services;
 using Orchard.Logging;
 using Orchard.Tasks;
@@ -15,14 +12,16 @@ namespace Amba.ImagePowerTools.Tasks
         private static DateTime _lastRun = new DateTime(2010, 10, 10);
 
         private const int CleanPeriodInMinutes = 30;
-        private IPowerToolsSettingsService _settingsService;
+        private readonly IPowerToolsSettingsService _settingsService;
+        private readonly IImageResizerService _imageResizerService;
 
         public ILogger Logger { get; set; }
 
-        public CacheCleanupTask(IPowerToolsSettingsService settingsService)
+        public CacheCleanupTask(IPowerToolsSettingsService settingsService, IImageResizerService imageResizerService)
         {
             Logger = NullLogger.Instance;
             _settingsService = settingsService;
+            _imageResizerService = imageResizerService;
         }
 
         public void Sweep()
@@ -38,8 +37,7 @@ namespace Amba.ImagePowerTools.Tasks
                 _wasStarted = true;
                 try
                 {
-                    var resizeService = new ImageResizerService(_settingsService);
-                    resizeService.DeleteOldCache();
+                    _imageResizerService.DeleteExpiredCache();
                     _lastRun = DateTime.Now;
                     _settingsService.Settings.DeleteOldLastJobRun = _lastRun;
                     _settingsService.SaveSettings();

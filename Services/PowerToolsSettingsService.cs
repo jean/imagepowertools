@@ -18,7 +18,7 @@ namespace Amba.ImagePowerTools.Services
     {
         private readonly IRepository<ImagePowerToolsSettingsRecord> _settingsRepo;
         private ImagePowerToolsSettingsRecord _settingsRecordCache;
-        private static object _settingsLock = new object();
+        private static readonly object _settingsLock = new object();
 
         public PowerToolsSettingsService(IRepository<ImagePowerToolsSettingsRecord> settingsRepo)
         {
@@ -63,7 +63,8 @@ namespace Amba.ImagePowerTools.Services
                     MaxCacheAgeDays = 30,
                     MaxCacheSizeMB = 512,
                     MaxImageHeight = 2000,
-                    MaxImageWidth = 2000
+                    MaxImageWidth = 2000,
+                    EnableContentItemFolderCleanup = true
                 };
             return settings;
         }

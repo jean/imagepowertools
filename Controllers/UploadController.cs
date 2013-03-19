@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
 using Amba.ImagePowerTools.Services;
 using Orchard.Themes;
-using Amba.ImagePowerTools.Extensions;
 
 namespace Amba.ImagePowerTools.Controllers
 {
     [Themed(false)]
     public class UploadController : Controller
     {
-
         private readonly IMediaFileSystemService _mediaFileSystemService;
 
         public UploadController(IMediaFileSystemService mediaFileSystemService)
@@ -29,7 +22,7 @@ namespace Amba.ImagePowerTools.Controllers
             if (file == null || file.ContentLength == 0)
                 return Content("No file in request");
 
-            if (!folder.ToLower().StartsWith(_mediaFileSystemService.GetMediaFolderBase().ToLower()))
+            if (!folder.ToLower().StartsWith(_mediaFileSystemService.GetMediaFolderRoot().ToLower()))
             {
                 return Content("Forbidden");
             }
@@ -40,7 +33,6 @@ namespace Amba.ImagePowerTools.Controllers
             {
                 return Content("Fail");
             }
-            // redirect back to the index action to show the form once again
             return Content("Ok");
         }
     }

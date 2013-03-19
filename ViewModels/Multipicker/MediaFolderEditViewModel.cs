@@ -33,7 +33,6 @@ namespace Amba.ImagePowerTools.ViewModels.Multipicker
     public class ImageFileViewModel
     {
         public MediaFile MediaFile { get; set; }
-        //public string PublicUrl { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
         public bool IsImage { get; set; }

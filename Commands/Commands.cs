@@ -6,10 +6,16 @@ namespace Amba.ImagePowerTools.Commands
     public class Go2SeeCommands : DefaultOrchardCommandHandler
     {
         private readonly IPowerToolsSettingsService _settingsService;
-   
+        private readonly IMediaFileSystemService _mediaFileSystemService;
+        private readonly IImageResizerService _imageResizerService;
+
         public Go2SeeCommands(
-            IPowerToolsSettingsService settingsService)
+            IPowerToolsSettingsService settingsService,
+            IMediaFileSystemService mediaFileSystemService,
+            IImageResizerService imageResizerService)
         {
+            _imageResizerService = imageResizerService;
+            _mediaFileSystemService = mediaFileSystemService;
             _settingsService = settingsService;
         }
 
@@ -17,16 +23,14 @@ namespace Amba.ImagePowerTools.Commands
         [CommandName("amba.ipt deleteold")]
         public void CacheDeleteOld() 
         {
-            var resizeService = new ImageResizerService(_settingsService);
-            resizeService.DeleteOldCache();
+            _imageResizerService.DeleteExpiredCache();
         }
 
         [CommandHelp("Deletes all files from cache")]
         [CommandName("amba.ipt clearcache")]
         public void ClearCache()
         {
-            var resizeService = new ImageResizerService(_settingsService);
-            resizeService.ClearCache();
+            _imageResizerService.ClearCache();
         }
     }
 }

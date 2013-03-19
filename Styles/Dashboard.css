@@ -57,6 +57,9 @@
 .image-list .image-item .image-preview img {
   display: block;
 }
+.image-list .image-item .image-preview img:hover {
+  cursor: move;
+}
 .image-list .image-item .image-fields {
   vertical-align: top;
   text-align: left;

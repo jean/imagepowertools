@@ -65,6 +65,7 @@
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\lib\aspnetmvc\System.Web.Mvc.dll</HintPath>
@@ -82,6 +83,7 @@
     <Content Include="Content\pdf.png" />
     <Content Include="Content\swf.png" />
     <Content Include="Scripts\CustomFieldsConfiguration.js" />
+    <Content Include="Scripts\AmbaSortableList.js" />
     <Content Include="Scripts\ExtraEvents.js" />
     <Content Include="Scripts\MultipickerDashboard.js" />
     <Content Include="Styles\dashboard.css">

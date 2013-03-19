@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System.Web;
+using System.Web.Mvc;
 using Amba.ImagePowerTools.Services;
 using ImageResizer.Configuration;
 using Orchard.Mvc.Extensions;

@@ -1,5 +1,10 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 using Amba.ImagePowerTools.Fields;
+using Amba.ImagePowerTools.Models;
 using Amba.ImagePowerTools.Services;
 using Amba.ImagePowerTools.Settings;
 using Amba.ImagePowerTools.ViewModels;
@@ -13,10 +18,12 @@ namespace Amba.ImagePowerTools.Drivers
     public class ImageMultiPickerFieldDriver : FieldDriverBase<ImageMultiPickerField>
     {
         private readonly IMediaFileSystemService _mediaFileSystemService;
+        private readonly IPowerToolsSettingsService _settingsService;
 
-        public ImageMultiPickerFieldDriver(IMediaFileSystemService mediaFileSystemService)
+        public ImageMultiPickerFieldDriver(IMediaFileSystemService mediaFileSystemService, IPowerToolsSettingsService settingsService)
         {
             _mediaFileSystemService = mediaFileSystemService;
+            _settingsService = settingsService;
         }
 
         protected override DriverResult Display(ContentPart part, ImageMultiPickerField field, string displayType, dynamic shapeHelper)
@@ -37,7 +44,7 @@ namespace Amba.ImagePowerTools.Drivers
                     {
                         Field = field,
                         Data = string.IsNullOrWhiteSpace(field.Data) ? "[]" : field.Data,
-                        FieldFolderName = _mediaFileSystemService.GetMediaFolderBase() + "/Amba.ImagePowerTools/" + part.Id + "_" + field.Name,
+                        FieldFolderName = _mediaFileSystemService.GetContentItemUploadFolder(part.Id, field.Name),
                         Settings = field.PartFieldDefinition.Settings.GetModel<ImageMultiPickerFieldSettings>()
                     };
 
@@ -48,10 +55,17 @@ namespace Amba.ImagePowerTools.Drivers
         protected override DriverResult Editor(ContentPart part, ImageMultiPickerField field, IUpdateModel updater, dynamic shapeHelper)
         {
             var viewModel = new ImageMultiPickerFieldEditorViewModel();
-
+            
             if (updater.TryUpdateModel(viewModel, GetPrefix(field, part), null, null))
             {
                 field.Data = viewModel.Data;
+                
+                var images = field.Images;
+                if (images != null && _settingsService.Settings.EnableContentItemFolderCleanup)
+                {
+                    var uploadFolder = _mediaFileSystemService.GetContentItemUploadFolder(part.Id, field.Name);
+                    Task.Factory.StartNew(() => _mediaFileSystemService.DeleteNotUsedFiles(uploadFolder, images));
+                }
             }
             return Editor(part, field, shapeHelper);
         }

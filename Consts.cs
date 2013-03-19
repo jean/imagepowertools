@@ -2,7 +2,8 @@
 {
     public static class Consts
     {
-        public static readonly string CacheFolderPath = "/Media/Amba.ImageCache";
-        public static string ModuleContentFolder = @"/modules/Amba.ImagePowerTools/content/";
+        public const string CacheFolderPath = "/Media/Amba.ImageCache";
+        public const string ModuleContentFolder = @"/modules/Amba.ImagePowerTools/content/";
+        public const string ContentItemUploadFolderPrefix = @"/Amba.ImagePowerTools/ContentItem_";
     }
 }

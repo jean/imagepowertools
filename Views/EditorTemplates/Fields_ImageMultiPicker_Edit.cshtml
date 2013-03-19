@@ -2,6 +2,7 @@
 @{
     Script.Include("angular.min.js").AtHead();
     Script.Include("angular-ui.min.js").AtHead();
+    Script.Include("AmbaSortableList.js").AtHead();
     Script.Include("MultipickerDashboard.js").AtHead();
     Script.Include("ExtraEvents.js").AtHead();
     Style.Include("dashboard.css").AtHead();
@@ -19,18 +20,19 @@
                 <a class="button" data-ng-click="reset()">@T("Reset")</a>
                 <a class="button" data-ng-click="clear()">@T("Clear")</a>
             </div>
-
+            
             <input name="@Html.NameFor(x => x.Data)" type="hidden" value="{{data|json}}"/>  
+            {{data|json}}
             <div class="upload-wrapper" data-ng-class="dragonClass"
-                data-ee-dragenter="onDragEnter($event)"
-                data-ee-dragover="onDragOver($event)"
-                data-ee-dragleave="onDragLeave($event)"
-                data-ee-drop="onDrop($event)"
-                >      
-                <ul class="table image-list" ng-model="data" ui:sortable>
+                 data-ee-dragenter="onDragEnter($event)"
+                 data-ee-dragover="onDragOver($event)"
+                 data-ee-dragleave="onDragLeave($event)"
+                 data-ee-drop="onDrop($event)"
+                >     
+                <ul amba-sortable-list data-ng-model="data" class="table image-list">
                     <li class="table-row image-item" data-ng-repeat="image in data" >
                         <div class="table-cell image-preview" style="width:@(Model.Settings.PreviewWidth)px;">
-                            <img data-ng-src="/ipt/resize{{image.file}}?width=@(Model.Settings.PreviewWidth)" alt="" style="width:@(Model.Settings.PreviewWidth)px;"/>
+                            <img data-ng-src="@VirtualPathUtility.ToAbsolute("~/ipt/resize"){{image.file}}?width=@(Model.Settings.PreviewWidth)" alt="" style="width:@(Model.Settings.PreviewWidth)px;"/>
                         </div>
                         <div class="table-cell image-fields">
                             <a href="{{image.file}}" target="_blank">
@@ -53,18 +55,14 @@
                                         break;
                                 }
                             }
-                                
-                            
-                            
-
                         </div>
                         <div class="table-cell image-buttons">
                             <a href="" ng-click="deleteImage(image.file)">@T("Delete")</a>
                         </div>
-                    </li>
+                    </li>                   
                     <li data-ng-show="data.length==0 && uploads.length==0" class="empty-list table-row">
                         <div class="upload-message table-cell">@T("Drop file here to upload")</div>
-                    </li>
+                    </li>                
                 </ul>
                 <ul class="upload-list table" data-ng-show="uploads.length > 0">
                     <li class="table-row upload-item" data-ng-repeat="upload in uploads" >
@@ -84,13 +82,15 @@
 @using (Script.Foot())
 {
     <script type="text/javascript">
-        angular.module('app_@(pickerId)', ['MultipickerDashboard', 'ExtraEvents', 'ui'])
+        angular.module('app_@(pickerId)', ['MultipickerDashboard', 'ExtraEvents', 'AmbaSortableList', 'ui'])
             .value('data', @Html.Raw(Model.Data))
             .value('options', {
                 id: '@(pickerId)',
-                fieldFolder: '@Html.Raw(Model.FieldFolderName)'
+                fieldFolder: "@Html.Raw(Model.FieldFolderName)",
+                pickerWindowUrl: "@Url.Action("Index", "Multipicker", new {area="Amba.ImagePowerTools"})"
             });
             
         angular.bootstrap($('#app_@(pickerId)'), ['app_@(pickerId)']);
+       
     </script>
 }
