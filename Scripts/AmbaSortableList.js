@@ -20,10 +20,17 @@
                 $scope.$apply();
             };
 
-            element.sortable({
+            var sortableParams = {
                 start: $scope.dragStart,
                 update: $scope.dragEnd
-            });
+            };
+
+            var additionalParams = $scope.$eval(attr["ambaSortableList"]);
+            if (additionalParams) {
+                sortableParams = $.extend(sortableParams, additionalParams);
+            }
+
+            element.sortable(sortableParams);
 
         }
     };
