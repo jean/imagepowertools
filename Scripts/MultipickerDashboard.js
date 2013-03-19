@@ -18,9 +18,8 @@
             openPicker(":last", self.pickerId);
         };
       
-
         $scope.reset = function() {
-            $scope.data = originData;
+            $scope.data = self.originData;
         };
 
         $scope.clear = function() {
