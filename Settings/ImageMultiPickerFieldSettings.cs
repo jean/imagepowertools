@@ -26,7 +26,7 @@ namespace Amba.ImagePowerTools.Settings
             get
             {
                 if (string.IsNullOrWhiteSpace(_customFields))
-                    return "[{name:'descr', displayName:'', type:'textarea'}]";
+                    _customFields = "[{name:'descr', displayName:'', type:'textarea'}]";
                 return _customFields;
             }
             set { _customFields = value; }

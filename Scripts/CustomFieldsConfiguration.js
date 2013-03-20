@@ -7,53 +7,19 @@
         var self = this;
         $scope.customFields = customFields;
 
-        $scope.addField = function(formName) {
-            var form = $scope[formName];
-            if (!form.$valid)
-                return;
+        $scope.addField = function (formName) {
 
+            if ($.trim($scope.fieldName).length == 0 || getFieldPosition($.trim($scope.fieldName)) > -1) {
+                return;
+            }
             $scope.customFields.push({
                 name: $.trim($scope.fieldName),
                 displayName: $.trim($scope.fieldDisplayName),
                 type: $scope.fieldType
             });
-            $scope.resetForm(formName, { 'fieldName': '', 'fieldDisplayName': '', fieldType: 'text' });
-        };
-
-        $scope.resetForm = function(formName, defaults) {
-            $('form[name=' + formName + '], form[name=' + formName + '] .ng-dirty').removeClass('ng-dirty').addClass('ng-pristine');
-            var form = $scope[formName];
-            form.$dirty = false;
-            for (var field in form)
-                if (form[field].$pristine === false)
-                    form[field].$pristine = true;
-
-            if (form[field].$dirty === true)
-                form[field].$dirty = false;
-
-
-            if (defaults)
-                for (var d in defaults)
-                    $scope[d] = defaults[d];
-        };
-
-        $scope.nameIsUniq = function (fieldName) {
-            fieldName = $.trim(fieldName);
-            var position = getFieldPosition(fieldName);
-            if (position >= 0)
-                return false;
-            return true;
-        };
-
-        $scope.nameIsNotFile = function(fieldName) {
-            if (fieldName == "file") {
-                return false;
-            }
-            return true;
-        };
-
-        $scope.nameIsNotEmpty = function(fieldName) {
-            return $.trim(fieldName).length > 0;
+            $scope.fieldName = "";
+            $scope.fieldDisplayName = "";
+            $scope.fieldType = "text";
         };
 
         function getFieldPosition(fieldName) {
@@ -71,12 +37,6 @@
                 $scope.customFields.splice(position, 1);
             }
         };
-
-        $scope.notDuplicate = function(value) {
-            var position = getFieldPosition(value);
-            return position < 0;
-        };
-
     };
     module.controller(controllers);
 
