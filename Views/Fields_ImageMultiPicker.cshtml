@@ -1,5 +1,6 @@
 ﻿@using Amba.ImagePowerTools.Fields
 @using Amba.ImagePowerTools.HtmlHelpers
+@using Amba.ImagePowerTools.Extensions
 @using System.Linq
 @{
     var field = (ImageMultiPickerField)Model.Field;
@@ -27,7 +28,7 @@
         @foreach (var image in field.Images.Take(4))
         {   
             <div class="image-item">
-                <a href="@image.FilePath" target="_blank">
+                <a href="@Url.ToAbsoluteUrl(image.FilePath)" target="_blank">
                     @Html.ResizedImage(image.FilePath, height:60, htmlAttributes: new { alt="", @class="pickerimage"}) 
                 </a>
             </div>

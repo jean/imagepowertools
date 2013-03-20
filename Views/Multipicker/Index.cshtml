@@ -19,11 +19,6 @@
         <title>@T("Image Multipicker")</title>
         @Display.Metas()
         @Display.HeadScripts()
-        
-        <script src="/Modules/Amba.ImagePowerTools/Scripts/angular.min.js"  type="text/javascript"></script>
-        <script src="/Modules/Amba.ImagePowerTools/Scripts/angular-ui.min.js"  type="text/javascript"></script>
-        <script src="/Modules/Amba.ImagePowerTools/Scripts/ExtraEvents.js"  type="text/javascript"></script> 
-        
         @Display.HeadLinks()
         @Display.StyleSheetLinks()
     </head>
@@ -56,9 +51,7 @@
                         <input type="hidden" value="@Model.MediaPath" name="mediaPath"/>
                         <input type="hidden" value="@Model.Scope" name="scope"/>
                     </div>
-                    }     
-                
-                               
+                    }                                                   
                 <form>
                     <table class="file-browser" style="min-width: 340px;">
                         @foreach (var folder in Model.MediaFolders)
@@ -81,10 +74,10 @@
                                     <input type="checkbox" class="file-picker-checkbox" value="@(file.MediaFile.MediaPath)" name="selected"/>
                                 </td>
                                 <td style="width: 100px; padding:4px;">
-                                    <a href="@file.MediaFile.MediaPath" target="_blank">
+                                    <a href="@Url.ToAbsoluteUrl(file.MediaFile.MediaPath)" target="_blank">
                                         @if (file.IsImage)
                                         {
-                                            @Html.ResizedImage(file.MediaFile.MediaPath, settings: "width=100")                                                                 
+                                            @Html.ResizedImage(file.MediaFile.MediaPath, settings: "width=100", isAbosuleImageUrl:true)                                                                 
                                         }
                                         else
                                         {

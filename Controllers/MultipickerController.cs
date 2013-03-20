@@ -49,7 +49,10 @@ namespace Amba.ImagePowerTools.Controllers
         {
             if (string.IsNullOrWhiteSpace(mediaPath))
                 return true;
-            var publicUrl = _mediaService.GetPublicUrl(mediaPath);
+            var publicUrl = _mediaService.GetPublicUrl(
+                Path.Combine(_mediaFileSystemService.GetMediaFolderRoot(), mediaPath)
+                );
+             
             var serverPath = Server.MapPath("~" + publicUrl);
             return Directory.Exists(serverPath);
         }

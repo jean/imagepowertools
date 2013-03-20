@@ -4,6 +4,7 @@ using Amba.ImagePowerTools.Services;
 using ImageResizer.Configuration;
 using Orchard.Mvc.Extensions;
 using Orchard.Themes;
+using Amba.ImagePowerTools.Extensions;
 
 namespace Amba.ImagePowerTools.Controllers
 {
@@ -43,7 +44,7 @@ namespace Amba.ImagePowerTools.Controllers
             {
                 return HttpNotFound();
             }
-            return this.RedirectLocal(retValImageUrl);
+            return this.RedirectLocal(retValImageUrl.ToAbsoluteUrl());
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Web;
 using Amba.ImagePowerTools.ViewModels.Admin;
 using Orchard.Media.Models;
+using Amba.ImagePowerTools.Extensions;
 
 namespace Amba.ImagePowerTools.ViewModels.Multipicker
 {
@@ -19,7 +20,7 @@ namespace Amba.ImagePowerTools.ViewModels.Multipicker
         public string GetPickerUrl(string folderMediaPath)
         {
             var result = string.Format(
-                "/Amba.ImagePowerTools/Multipicker/Index?scope={0}&mediaPath={1}",
+                "/Amba.ImagePowerTools/Multipicker/Index".ToAbsoluteUrl() +  "?scope={0}&mediaPath={1}",
                 Scope,
                 HttpUtility.HtmlEncode(folderMediaPath));
             return result;

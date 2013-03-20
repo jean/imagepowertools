@@ -3,11 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace Amba.ImagePowerTools.Extensions
 {
     internal static class StringExtensions
 	{
+        public static string ToAbsoluteUrl(this string relativeUrl)
+        {
+            if (relativeUrl.StartsWith("~/"))
+                return VirtualPathUtility.ToAbsolute(relativeUrl);
+            return VirtualPathUtility.ToAbsolute("~/" + relativeUrl.TrimStart('/'));
+        }
+
 		public static string UpperFirst(this string input)
 		{
 			if (!input.Any())

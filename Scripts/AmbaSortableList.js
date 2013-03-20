@@ -11,7 +11,6 @@
             $scope.dragEnd = function (e, ui) {
                 var start = ui.item.data('start'),
                     end = ui.item.index();
-
                 var list = ngModel.$viewValue;
 
                 list.splice(end, 0,
@@ -31,7 +30,6 @@
             }
 
             element.sortable(sortableParams);
-
         }
     };
 });

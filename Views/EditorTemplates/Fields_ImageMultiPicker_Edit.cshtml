@@ -1,4 +1,5 @@
 ﻿@model Amba.ImagePowerTools.ViewModels.ImageMultiPickerFieldEditorViewModel
+@using Amba.ImagePowerTools.Extensions
 @{
     Script.Include("angular.min.js").AtHead();
     Script.Include("angular-ui.min.js").AtHead();
@@ -9,6 +10,8 @@
 
     Script.Require("jQueryUI_Sortable").AtHead();
     var pickerId = Guid.NewGuid().ToString("N").Substring(0, 6);
+    var siteRoot = VirtualPathUtility.ToAbsolute("~/").TrimEnd('/');
+
 }
 <fieldset>
     <label>@Model.Field.DisplayName</label>
@@ -20,7 +23,6 @@
                 <a class="button" data-ng-click="reset()">@T("Reset")</a>
                 <a class="button" data-ng-click="clear()">@T("Clear")</a>
             </div>
-            
             <input name="@Html.NameFor(x => x.Data)" type="hidden" value="{{data|json}}"/>  
             <div class="upload-wrapper" 
                 data-ng-class="dragonClass"
@@ -29,13 +31,13 @@
                 data-ee-dragleave="onDragLeave($event)"
                 data-ee-drop="onDrop($event)"
             >     
-                <ul amba-sortable-list="{ opacity: 0.5 }" data-ng-model="data" class="table image-list">
+                <ul data-amba-sortable-list="{ opacity: 0.5 }" data-ng-model="data" class="table image-list">
                     <li class="table-row image-item" data-ng-repeat="image in data" >
                         <div class="table-cell image-preview" style="width:@(Model.Settings.PreviewWidth)px;">
-                            <img data-ng-src="@VirtualPathUtility.ToAbsolute("~/ipt/resize"){{image.file}}?width=@(Model.Settings.PreviewWidth)" alt="" style="width:@(Model.Settings.PreviewWidth)px;"/>
+                            <img data-ng-src="@(siteRoot)/ipt/resize{{image.file}}?width=@(Model.Settings.PreviewWidth)" alt="" style="width:@(Model.Settings.PreviewWidth)px;"/>
                         </div>
                         <div class="table-cell image-fields">
-                            <a href="{{image.file}}" target="_blank" title="@T("Open file in new window")">
+                            <a href="@(siteRoot){{image.file}}" target="_blank" title="@T("Open file in new window")">
                                 <span class="filepath">{{image.file | filename}}</span>
                             </a>                            
                             @foreach (var customField in Model.Settings.CustomFieldsList)

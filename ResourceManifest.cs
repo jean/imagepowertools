@@ -6,8 +6,6 @@ namespace Amba.ImagePowerTools
     {
         public void BuildManifests(ResourceManifestBuilder builder)
         {
-            var manifest = builder.Add();
-
         }
     }
 }

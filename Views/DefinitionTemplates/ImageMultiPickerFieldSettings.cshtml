@@ -1,10 +1,10 @@
 ﻿@model Amba.ImagePowerTools.Settings.ImageMultiPickerFieldSettings
 @{
-    //Script.Include("angular.js").AtHead();
-    //Script.Include("angular-ui.js").AtHead();
-
+    Script.Include("angular.js").AtHead();
+    Script.Include("angular-ui.js").AtHead();
+    Script.Include("AmbaSortableList.js").AtHead();
     Script.Include("CustomFieldsConfiguration.js").AtHead();
-    //  Script.Require("jQueryUI_Sortable").AtHead();
+    Script.Require("jQueryUI_Sortable").AtHead();
     Style.Include("fields-configuration.css");
     var id = Guid.NewGuid().ToString("N").Substring(0, 6);
 }
@@ -38,7 +38,7 @@
                 <option value="textarea">TextArea</option>
             </select>
         </div>
-        <div class="form-button">
+        <div class="add-button">
             <a class="button" ng-click="addField('form_@(id)')">@T("Add")</a>
         </div>
     </form>
@@ -47,7 +47,7 @@
         @T("No Custom Properties Added")
     </div>
 
-    <div class="table" ng-model="customFields" ui:sortable>
+    <div class="table" ng-model="customFields" data-amba-sortable-list="{ opacity: 0.5 }">
         <div class="table-row custom-field-row" data-ng-repeat="field in customFields" >
             <div class="table-cell name-cell">
                 Name: 
@@ -75,7 +75,7 @@
 {
     
     <script type="text/javascript">
-        angular.module('app_@(id)', ['CustomFieldsConfiguration', 'ui'])
+        angular.module('app_@(id)', ['CustomFieldsConfiguration', 'AmbaSortableList', 'ui'])
             .value('customFields', @Html.Raw(Model.CustomFields))
             .value('options', {
                 id: '@(id)'
