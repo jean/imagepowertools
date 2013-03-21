@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Dynamic;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace Amba.ImagePowerTools.Models
 {
@@ -15,6 +16,11 @@ namespace Amba.ImagePowerTools.Models
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
+            if (!GetDynamicMemberNames().Contains(binder.Name))
+            {
+                result = string.Empty;
+                return true;
+            }
             return _properties.TryGetValue(binder.Name, out result);
         }
 
