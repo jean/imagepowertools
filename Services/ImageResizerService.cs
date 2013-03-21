@@ -20,7 +20,10 @@ namespace Amba.ImagePowerTools.Services
         string GetCleanFileExtension(string url);
         bool IsSupportedNonImage(string fileName);
         bool IsImage(string fileName);
-        string ResizeImage(string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0, int quality = 0, string settings = "");
+
+        string ResizeImage(string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0,
+                           int quality = 0, string settings = "");
+
         string ResizeImage(string url, string settings);
         void ClearCache();
         void CacheStatistics(out long fileCount, out long totalSize);
@@ -33,7 +36,8 @@ namespace Amba.ImagePowerTools.Services
         private readonly IPowerToolsSettingsService _settingsService;
         private readonly IMediaFileSystemService _mediaFileSystemService;
 
-        public ImageResizerService(IPowerToolsSettingsService settingsService, IMediaFileSystemService mediaFileSystemService)
+        public ImageResizerService(IPowerToolsSettingsService settingsService,
+                                   IMediaFileSystemService mediaFileSystemService)
         {
             _mediaFileSystemService = mediaFileSystemService;
             _settingsService = settingsService;
@@ -69,9 +73,9 @@ namespace Amba.ImagePowerTools.Services
             }
             return sb.ToString();
         }
-        
+
         public string ResizeImage(
-            string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0,  
+            string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0,
             int quality = 0,
             string settings = "")
         {
@@ -86,7 +90,7 @@ namespace Amba.ImagePowerTools.Services
                 resizeSettings.MaxHeight = maxHeight;
             if (maxWidth > 0)
                 resizeSettings.MaxWidth = maxWidth;
-            
+
             return GetResizedUrl(url, resizeSettings);
         }
 
@@ -132,7 +136,7 @@ namespace Amba.ImagePowerTools.Services
                 }
 
                 imageServerPath = FilterUnsupportedFiles(imageServerPath);
-                if (string.IsNullOrWhiteSpace(imageServerPath)) 
+                if (string.IsNullOrWhiteSpace(imageServerPath))
                     return "";
 
                 var cachedImagePath = GetImageCachePath(url, settings);
@@ -177,7 +181,8 @@ namespace Amba.ImagePowerTools.Services
             return imageServerPath;
         }
 
-        private static void WriteResizedImage(string cachedImageServerPath, string imageServerPath, ResizeSettings settings)
+        private static void WriteResizedImage(string cachedImageServerPath, string imageServerPath,
+                                              ResizeSettings settings)
         {
             for (int i = 0; i < 10; i++)
             {
@@ -193,7 +198,8 @@ namespace Amba.ImagePowerTools.Services
             }
         }
 
-        private static void WriteResizedFile(string cachedImageServerPath, string imageServerPath, ResizeSettings settings)
+        private static void WriteResizedFile(string cachedImageServerPath, string imageServerPath,
+                                             ResizeSettings settings)
         {
             string cachedImageDir = Path.GetDirectoryName(cachedImageServerPath);
             if (!string.IsNullOrWhiteSpace(cachedImageDir) && !Directory.Exists(cachedImageServerPath))
@@ -212,10 +218,10 @@ namespace Amba.ImagePowerTools.Services
             }
             string hasedProperties = CreateMd5Hash(settings.ToString());
             string cachedFileName = string.Format("{0}/{1}-{2}.{3}",
-                GetFolderHash(imageDir),
-                Path.GetFileNameWithoutExtension(url), 
-                hasedProperties,
-                GetCleanFileExtension(url));
+                                                  GetFolderHash(imageDir),
+                                                  Path.GetFileNameWithoutExtension(url),
+                                                  hasedProperties,
+                                                  GetCleanFileExtension(url));
             string cachedImagePath = string.Concat(Consts.CacheFolderPath, "/", cachedFileName.TrimStart('/', '\\'));
             return cachedImagePath;
         }
@@ -227,7 +233,7 @@ namespace Amba.ImagePowerTools.Services
                 .Replace('\\', '/')
                 .RegexRemove("^Media");
         }
-        
+
         public string GetCleanFileExtension(string url)
         {
             var extension = Path.GetExtension(url);
@@ -237,7 +243,7 @@ namespace Amba.ImagePowerTools.Services
             }
             return string.Empty;
         }
-        
+
         public void DeleteExpiredCache()
         {
             var mediaFolder = _mediaFileSystemService.GetServerPath("/Media");
@@ -270,14 +276,14 @@ namespace Amba.ImagePowerTools.Services
                 {
                     var mediaFiles = new HashSet<string>(
                         Directory.GetFiles(mediaPath)
-                            .Select(x => x.ToLower())
-                            .Distinct()
-                            .ToList());
+                                 .Select(x => x.ToLower())
+                                 .Distinct()
+                                 .ToList());
                     var cachedFiles = Directory.GetFiles(cacheMediaFolder).Select(x => x.ToLower()).ToList();
                     foreach (var cachedFilePath in cachedFiles)
                     {
                         var cachedfileName = Path.GetFileName(cachedFilePath);
-                        if(string.IsNullOrWhiteSpace(cachedfileName))
+                        if (string.IsNullOrWhiteSpace(cachedfileName))
                             continue;
                         var fileNameMatch = fileNameRegex.Match(cachedfileName);
                         if (!fileNameMatch.Success)
@@ -292,7 +298,7 @@ namespace Amba.ImagePowerTools.Services
                             }
                             catch (Exception e)
                             {
-                                Logger.Error(e, "Cannot delete file " + cachedFilePath);
+                                Logger.Error(e, e.Message + " Cannot delete file " + cachedFilePath);
                             }
                         }
                     }
@@ -303,25 +309,16 @@ namespace Amba.ImagePowerTools.Services
         public void ClearCache()
         {
             var cacheDir = new DirectoryInfo(_mediaFileSystemService.GetServerPath(Consts.CacheFolderPath));
-            for (int i = 0; i < 10; i++)
+            foreach (var file in cacheDir.GetFiles())
             {
-                try
-                {
-                    foreach (var file in cacheDir.GetFiles())
-                    {
-                        file.Delete();
-                    }
-                    foreach (var dir in cacheDir.GetDirectories())
-                    {
-                        dir.Delete(true);
-                    }
-                }
-                catch
-                {
-                }
-                return;                
+                file.Delete();
+            }
+            foreach (var dir in cacheDir.GetDirectories())
+            {
+                dir.Delete(true);
             }
         }
+
 
         private void EnsureCacheFolder()
         {

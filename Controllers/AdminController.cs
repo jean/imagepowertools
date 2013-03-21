@@ -1,7 +1,13 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 using Amba.ImagePowerTools.Services;
 using Amba.ImagePowerTools.ViewModels.Admin;
+using Orchard;
+using Orchard.Localization;
 using Orchard.UI.Admin;
+using Orchard.UI.Admin.Notification;
+using Orchard.UI.Notify;
 
 namespace Amba.ImagePowerTools.Controllers
 {
@@ -10,9 +16,14 @@ namespace Amba.ImagePowerTools.Controllers
     {
         private readonly IPowerToolsSettingsService _settingsService;
         private readonly IImageResizerService _resizerService;
+        private readonly IOrchardServices _services;
 
-        public AdminController(IPowerToolsSettingsService settingsService, IImageResizerService resizerService)
+        public AdminController(
+            IPowerToolsSettingsService settingsService, 
+            IImageResizerService resizerService,
+            IOrchardServices services)
         {
+            _services = services;
             _settingsService = settingsService;
             _resizerService = resizerService;
         }
@@ -46,7 +57,18 @@ namespace Amba.ImagePowerTools.Controllers
         [HttpPost]
         public ActionResult ClearCache()
         {
-            _resizerService.ClearCache();
+            try
+            {
+                Task.Factory.StartNew(() => _resizerService.ClearCache()).Wait();
+                _services.Notifier.Add(NotifyType.Information, new LocalizedString("Cache was cleared"));
+            }
+            catch (AggregateException e)
+            {
+                foreach (var inner in e.InnerExceptions)
+                {
+                    _services.Notifier.Add(NotifyType.Error, new LocalizedString(inner.Message));    
+                }
+            }
             return RedirectToAction("Cache");
         }
     }
