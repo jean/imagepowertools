@@ -1,7 +1,7 @@
 ﻿@model Amba.ImagePowerTools.ViewModels.ImageMultiPickerFieldEditorViewModel
 @using Amba.ImagePowerTools.Extensions
 @{
-    Script.Include("angular.min.js").AtHead();
+    Script.Include("angular_last.min.js").AtHead();
     Script.Include("angular-ui.min.js").AtHead();
     Script.Include("AmbaSortableList.js").AtHead();
     Script.Include("MultipickerDashboard.js").AtHead();
@@ -16,8 +16,7 @@
 <fieldset>
     <label>@Model.Field.DisplayName</label>
     <div id="app_@(pickerId)">
-        <div data-ng-controller="DashboardCtrl">
-        
+        <div data-ng-controller="DashboardCtrl">        
             <div class="imagemultipicker-dashboard-button-panel">
                 <a class="button" data-ng-click="selectImages()">@T("Select Images")</a>
                 <a class="button" data-ng-click="reset()">@T("Reset")</a>
@@ -31,7 +30,7 @@
                 data-ee-dragleave="onDragLeave($event)"
                 data-ee-drop="onDrop($event)"
             >     
-                <ul data-amba-sortable-list="{ opacity: 0.5 }" data-ng-model="data" class="table image-list">
+                <ul data-amba-sortable-list="{opacity: 0.5}" data-ng-model="data" class="table image-list">
                     <li class="table-row image-item" data-ng-repeat="image in data" >
                         <div class="table-cell image-preview" style="width:@(Model.Settings.PreviewWidth)px;">
                             <img data-ng-src="@(siteRoot)/ipt/resize{{image.file}}?width=@(Model.Settings.PreviewWidth)" alt="" style="width:@(Model.Settings.PreviewWidth)px;"/>
@@ -72,6 +71,9 @@
                         </div>
                         <div class="table-cell upload-file">
                             {{upload.file}}
+                        </div>
+                        <div class="table-cell cancel-button">
+                            <a  href="" ng-click="cancelUpload(upload)" >@T("Cancel upload")</a>
                         </div>
                     </li>
                 </ul>

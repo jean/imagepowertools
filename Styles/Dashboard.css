@@ -36,6 +36,12 @@
   vertical-align: middle;
   font-size: 32px;
 }
+.upload-list .upload-item .cancel-button {
+  vertical-align: top;
+  text-align: right;
+  padding-right: 8px;
+  padding-top: 4px;
+}
 .image-list .empty-list {
   height: 100px;
   border: 1px solid #EAEAEA !important;

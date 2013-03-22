@@ -11,7 +11,7 @@
         self.fieldFolder = options.fieldFolder;
 
         $scope.data = data;
-        $scope.uploads = [];
+        $scope.uploads = [{ progress: 87, file: "longcat.jpg" }, { progress: 10, file: 'basementcat.png' }];
 
         $scope.selectImages = function() {
             initPickerClient();
@@ -41,6 +41,7 @@
         $scope.onDragLeave = function($event) {
             $scope.dragonClass = '';
         };
+        
         $scope.onDrop = function($event) {
             $scope.dragonClass = '';
             $event.originalEvent.dataTransfer.files.forEach(function(file) {
@@ -57,9 +58,26 @@
             }
         }
 
-        var uploadFile = function(file) {
+        var uploadCounter = 0;
+        var uploaders = {};
 
-            $scope.uploads.push({ file: file.name, progress: 0 });
+        $scope.cancelUpload = function(upload) {
+            var xhr = uploaders[upload.id];
+            
+            for (var i = 0; i < $scope.uploads.length; i++) {
+                if ($scope.uploads[i].id == upload.id) {
+                    $scope.uploads.splice(i, 1);
+                    break;
+                }
+            }            
+            if (xhr) {             
+                xhr.abort();
+            } else {
+                clearInterval(upload.intervalId);
+            }
+        };
+
+        var uploadFile = function (file) {
             
             var uploadProgress = function(event) {
                 var percent = parseInt(event.loaded / event.total * 100);
@@ -74,16 +92,16 @@
 
             var stateChange = function(event) {
                 if (event.target.readyState == 4) {
-                    
-                    for (var i = 0; i < $scope.uploads.length; i++) {
-                        if ($scope.uploads[i].file == file.name) {
-                            $scope.$apply(function() {
-                                $scope.uploads.splice(i, 1);
-                            });
-                            break;
+                    if (!$scope.$$phase) {
+                        for (var i = 0; i < $scope.uploads.length; i++) {
+                            if ($scope.uploads[i].file == file.name) {
+                                $scope.$apply(function () {
+                                    $scope.uploads.splice(i, 1);
+                                });
+                                break;
+                            }
                         }
-                    }
-
+                    };
                     if (event.target.status == 200) {
                         $scope.$apply(function() {
                             $scope.data.push({ file: self.fieldFolder + "/" + file.name });
@@ -91,23 +109,38 @@
                     } else {
                         ///TODO: do something on download error
                     }
-
+                    uploadCounter--;
                 }
             };
 
-            var xhr = new XMLHttpRequest();
-            xhr.upload.addEventListener('progress', uploadProgress, false);
-            xhr.onreadystatechange = stateChange;
-            xhr.open('POST', '/ipt/upload');
+            var sendUploadRequest = function (uploadId) {                
+                var xhr = new XMLHttpRequest();
+                uploaders[uploadId] = xhr;
+                xhr.upload.addEventListener('progress', uploadProgress, false);
+                xhr.onreadystatechange = stateChange;
+                xhr.open('POST', '/ipt/upload');
 
-            xhr.setRequestHeader("Cache-Control", "no-cache");
-            xhr.setRequestHeader("Connection", "keep-alive");
+                xhr.setRequestHeader("Cache-Control", "no-cache");
+                xhr.setRequestHeader("Connection", "keep-alive");
 
-            xhr.setRequestHeader('X-FILE-NAME', file.name);
-            var fd = new FormData();
-            fd.append("folder", self.fieldFolder);
-            fd.append("file", file);
-            xhr.send(fd);
+                xhr.setRequestHeader('X-FILE-NAME', file.name);
+                var fd = new FormData();
+                fd.append("folder", self.fieldFolder);
+                fd.append("file", file);
+                xhr.send(fd);                
+            };
+                        
+            var uploadId = Object.keys(uploaders).length + 1;
+            uploaders[uploadId] = false;
+                        
+            var intervalId = setInterval(function() {
+                if (uploadCounter < 3) {
+                    uploadCounter++;
+                    sendUploadRequest(uploadId);
+                    clearInterval(intervalId);
+                }
+            }, 500);
+            $scope.uploads.push({ file: file.name, progress: 0, id: uploadId, intervalId: intervalId });
         };
 
         function initPickerClient() {
@@ -143,26 +176,7 @@
                 "Select",
                 "width=450,height=600,resizable=yes,scrollbars=yes,status=yes");
             newWin.focus();
-        }
-       /*
-        $scope.dragStart = function (e, ui) {
-            ui.item.data('start', ui.item.index());
-        };
-
-        $scope.dragEnd = function (e, ui) {
-            var start = ui.item.data('start'),
-                end = ui.item.index();
-
-            $scope.data.splice(end, 0,
-                $scope.data.splice(start, 1)[0]);
-
-            $scope.$apply();
-        };
-
-        $('#selected_images_' + options.id).sortable({
-            start: $scope.dragStart,
-            update: $scope.dragEnd
-        }); */
+        }      
     };
     multipickerModule.controller(controllers);
    

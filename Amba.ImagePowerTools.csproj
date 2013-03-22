@@ -82,6 +82,8 @@
     <Content Include="Content\image_not_found.jpg" />
     <Content Include="Content\pdf.png" />
     <Content Include="Content\swf.png" />
+    <Content Include="Scripts\angular-last.js" />
+    <Content Include="Scripts\angular-last.min.js" />
     <Content Include="Scripts\angular-ui.js" />
     <Content Include="Scripts\angular-ui.min.js" />
     <Content Include="Scripts\angular.js" />

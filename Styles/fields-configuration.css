@@ -8,7 +8,7 @@
 .table-cell {
   display: table-cell;
 }
-input.ng-invalid {
+.ng-dirty input.ng-invalid {
   border: 1px solid red;
   line-height: 16px;
   padding: 2px;
