@@ -39,5 +39,33 @@ namespace Amba.ImagePowerTools.Models
         {
             return (dynamic) this;
         }
+
+        public string this[string name]
+        {
+            get
+            {
+                if (name == "file")
+                    return FilePath;
+                    
+                if (name == "descr")
+                    return Description;
+                return (string)_properties[name];
+            }
+            set
+            {
+                if (name == "file")
+                {
+                    FilePath = value;
+                    return;
+                }                    
+                if (name == "descr")
+                {
+                    Description = value;
+                    return;
+                }
+                    
+                _properties[name] = value;
+            }
+        }
     }
 }
