@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using Amba.ImagePowerTools.ImageResizerFilters;
 using ImageResizer;
 using ImageResizer.Configuration;
@@ -90,13 +91,13 @@ namespace Amba.ImagePowerTools.Services
                 resizeSettings.MaxHeight = maxHeight;
             if (maxWidth > 0)
                 resizeSettings.MaxWidth = maxWidth;
-
-            return GetResizedUrl(url, resizeSettings);
+            return
+                Task.Factory.StartNew(() => GetResizedUrl(url, resizeSettings)).Result;
         }
 
         public string ResizeImage(string url, string settings)
         {
-            return GetResizedUrl(url, new ResizeSettings(settings));
+            return Task.Factory.StartNew(() => GetResizedUrl(url, new ResizeSettings(settings))).Result;
         }
 
         private bool IsResizeSettingsValid(ResizeSettings settings)

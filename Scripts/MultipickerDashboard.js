@@ -11,7 +11,7 @@
         self.fieldFolder = options.fieldFolder;
 
         $scope.data = data;
-        $scope.uploads = [{ progress: 87, file: "longcat.jpg" }, { progress: 10, file: 'basementcat.png' }];
+        $scope.uploads = [];
 
         $scope.selectImages = function() {
             initPickerClient();

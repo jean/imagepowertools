@@ -74,7 +74,7 @@ namespace Amba.ImagePowerTools.Controllers
 
             var searchFilter = ("*" + search + "*").Replace("**", "*");
             var files = _mediaFileSystemService.FindFiles(mediaPath, searchFilter)
-                .Select(x => CreateFileViewModel(mediaPath, x));
+                .Select(x => CreateFileViewModel(x));
 
             var model = new MediaFolderEditViewModel
             {
@@ -133,7 +133,7 @@ namespace Amba.ImagePowerTools.Controllers
             var mediaFiles = _mediaService.GetMediaFiles(mediaPath)
                 .Where(x => _resizerService.IsImage(x.Name) || _resizerService.IsSupportedNonImage(x.Name))
                 .AsParallel()
-                .Select(x => CreateFileViewModel(mediaPath, x))
+                .Select(x => CreateFileViewModel(x))
                 .OrderBy(x => x.MediaFile.Name)
                 .ToList();
             var model = new MediaFolderEditViewModel
@@ -164,7 +164,7 @@ namespace Amba.ImagePowerTools.Controllers
             return result;
         }
 
-        private ImageFileViewModel CreateFileViewModel(string mediaPath, MediaFile file)
+        private ImageFileViewModel CreateFileViewModel(MediaFile file)
         {
             var result = new ImageFileViewModel
                 {

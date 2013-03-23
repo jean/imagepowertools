@@ -15,10 +15,36 @@ namespace Amba.ImagePowerTools.HtmlHelpers
             return new HtmlString(relativeUrl.ToAbsoluteUrl());
         }
 
+        public static IHtmlString ResizedImageUrl(
+            this UrlHelper helper, string path, int width = 0, int height = 0,
+            string settings = "",
+            string defaultImage = "/modules/Amba.ImagePowerTools/content/image_not_found.jpg",
+            bool isAbsoluteImageUrl = false)
+        {
+            if (path.StartsWith("/Media/") && settings.IsEmptyOrWhiteSpace() && !isAbsoluteImageUrl && width == 0 && height == 0)
+            {
+                return new HtmlString(path.ToAbsoluteUrl());
+            }
+            var workContext = helper.RequestContext.GetWorkContext();
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return new HtmlString(string.Empty);
+            }
+            if (isAbsoluteImageUrl)
+            {
+                path = path.TrimStart('/').Substring("/".ToAbsoluteUrl().TrimStart('/').Length);
+            }
+            var resizeService = workContext.Resolve<IImageResizerService>();
+            path = resizeService.ResizeImage(path, width, height, settings: settings);
+            if (string.IsNullOrWhiteSpace(path) && !string.IsNullOrWhiteSpace(defaultImage))
+            {
+                path = resizeService.ResizeImage(defaultImage, width, height, settings: settings);
+            }
+            return new HtmlString(path.ToAbsoluteUrl());
+        }
 
         public static HtmlString ResizedImage(
-            this HtmlHelper helper, 
-            //image path to reseize
+            this HtmlHelper helper,
             string path, 
             int width = 0, 
             int height = 0,
@@ -26,9 +52,9 @@ namespace Amba.ImagePowerTools.HtmlHelpers
             string settings = "",
             bool renderImgSizeAttributes = true,            
             object htmlAttributes = null,
-            bool isAbosuleImageUrl = false)
+            bool isAbsoluteImageUrl = false)
         {
-            path = ResizedImageUrl(helper, path, width, height, defaultImage: defaultImage, settings: settings, isAbosuleImageUrl: isAbosuleImageUrl).ToString();
+            path = ResizedImageUrl(helper, path, width, height, defaultImage: defaultImage, settings: settings, isAbsoluteImageUrl: isAbsoluteImageUrl).ToString();
             if (string.IsNullOrWhiteSpace(path))
             {
                 return new HtmlString(string.Empty);
@@ -48,32 +74,16 @@ namespace Amba.ImagePowerTools.HtmlHelpers
                 i => attrBuilder.AppendFormat(@" {0}=""{1}""", i.Key, i.Value.ToString().Replace("\"", "&quot;")
             )));
             return new HtmlString(string.Format(@"<img src=""{0}"" style=""{1}"" {2}/>", path, sb, attrBuilder));
-        }        
+        }                
 
         public static IHtmlString ResizedImageUrl(
             this HtmlHelper helper, string path, int width = 0, int height = 0,
             string settings = "",
             string defaultImage = "/modules/Amba.ImagePowerTools/content/image_not_found.jpg",
-            bool isAbosuleImageUrl = false)
+            bool isAbsoluteImageUrl = false)
         {
-            var workContext = helper.ViewContext.RequestContext.GetWorkContext();
-            //var urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
-            if (string.IsNullOrWhiteSpace(path))
-            {
-                return new HtmlString(string.Empty);
-            }
-            if (isAbosuleImageUrl)
-            {
-                path = path.TrimStart('/').Substring("/".ToAbsoluteUrl().TrimStart('/').Length);
-            }
-            //path = urlHelper.Content(path);
-            var resizeService = workContext.Resolve<IImageResizerService>();
-            path = resizeService.ResizeImage(path, width, height, settings: settings);
-            if (string.IsNullOrWhiteSpace(path) && !string.IsNullOrWhiteSpace(defaultImage))
-            {
-                path = resizeService.ResizeImage(defaultImage, width, height, settings: settings);
-            }
-            return new HtmlString(path.ToAbsoluteUrl());
+            var urlHelper = new UrlHelper(helper.ViewContext.RequestContext);
+            return ResizedImageUrl(urlHelper, path, width, height, settings, defaultImage, isAbsoluteImageUrl);
         }
     }
 }

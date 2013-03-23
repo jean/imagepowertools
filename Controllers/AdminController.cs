@@ -6,7 +6,6 @@ using Amba.ImagePowerTools.ViewModels.Admin;
 using Orchard;
 using Orchard.Localization;
 using Orchard.UI.Admin;
-using Orchard.UI.Admin.Notification;
 using Orchard.UI.Notify;
 
 namespace Amba.ImagePowerTools.Controllers
