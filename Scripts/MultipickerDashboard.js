@@ -12,6 +12,8 @@
 
         $scope.data = data;
         $scope.uploads = [];
+        $scope.dragAndDropEnabled = !!window.FileList;
+        
 
         $scope.selectImages = function() {
             initPickerClient();
@@ -30,21 +32,33 @@
             removeFile(file);
         };
 
-        $scope.onDragEnter = function($event) {
+        $scope.onDragEnter = function ($event) {
+            if (!$scope.dragAndDropEnabled) {
+                return;
+            }
             $scope.dragonClass = 'dragon';
         };
         
         $scope.onDragOver = function ($event) {
+            if (!$scope.dragAndDropEnabled) {
+                return;
+            }
             $scope.dragonClass = 'dragon';
         };
         
         $scope.onDragLeave = function($event) {
+            if (!$scope.dragAndDropEnabled) {
+                return;
+            }
             $scope.dragonClass = '';
         };
         
-        $scope.onDrop = function($event) {
+        $scope.onDrop = function ($event) {
+            if (!$scope.dragAndDropEnabled) {
+                return;
+            }
             $scope.dragonClass = '';
-            $event.originalEvent.dataTransfer.files.forEach(function(file) {
+            $.each($event.originalEvent.dataTransfer.files, function(i, file) {
                 uploadFile(file);
             });
         };
@@ -81,12 +95,14 @@
             
             var uploadProgress = function(event) {
                 var percent = parseInt(event.loaded / event.total * 100);
-                $scope.$apply(function() {
-                    $scope.uploads.forEach(function(f) {
-                        if (f.file == file.name) {
-                            f.progress = percent;
+                $scope.$apply(function () {
+                    $.each($scope.uploads,
+                        function(i, f) {
+                            if (f.file == file.name) {
+                                f.progress = percent;
+                            }
                         }
-                    });
+                    );
                 });
             };
 
@@ -150,7 +166,7 @@
             window[self.pickerId] = {
                 selected: function() {
                     var result = [];
-                    $scope.data.forEach(function(fileInfo) {
+                    $.each($scope.data, function(i, fileInfo) {
                         result.push(fileInfo.file);
                     });
                     return result;
@@ -186,15 +202,6 @@
             return input.replace(/^\/Media\/Default\//g, '');
         };
     });
-    
-    
-    if (FileList && !FileList.prototype.forEach) {
-        FileList.prototype.forEach = function(fn, scope) {
-            for (var i = 0, len = this.length; i < len; ++i) {
-                fn.call(scope, this[i], i, this);
-            }
-        };
-    }
 
 })();
 

@@ -21,24 +21,24 @@
     }
 
     var ngEventDirectives = {};
-    
-    'dragenter dragover dragleave drop'.split(' ').forEach(
-      function (name) {
-          var directiveName = directiveNormalize('ee-' + name);
-          ngEventDirectives[directiveName] = ['$parse', function ($parse) {
-              return function (scope, element, attr) {
-                  var fn = $parse(attr[directiveName]);
-                  element.bind(lowercase(name), function (event) {
-                      scope.$apply(function () {
-                          event.preventDefault();
-                          fn(scope, { $event: event });
-                      });
-                  });
-              };
-          }];
-      }
+    $.each(
+        'dragenter dragover dragleave drop'.split(' '),
+        function(i, name) {
+            var directiveName = directiveNormalize('ee-' + name);
+            ngEventDirectives[directiveName] = ['$parse', function($parse) {
+                return function(scope, element, attr) {
+                    var fn = $parse(attr[directiveName]);
+                    element.bind(lowercase(name), function(event) {
+                        scope.$apply(function() {
+                            event.preventDefault();
+                            fn(scope, { $event: event });
+                        });
+                    });
+                };
+            }];
+        }
     );
-
+    
     angular.module('ExtraEvents', [])
         .directive(ngEventDirectives);
 })();

@@ -86,8 +86,6 @@
     <Content Include="Scripts\angular-last.min.js" />
     <Content Include="Scripts\angular-ui.js" />
     <Content Include="Scripts\angular-ui.min.js" />
-    <Content Include="Scripts\angular.js" />
-    <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\CustomFieldsConfiguration.js" />
     <Content Include="Scripts\AmbaSortableList.js" />
     <Content Include="Scripts\ExtraEvents.js" />

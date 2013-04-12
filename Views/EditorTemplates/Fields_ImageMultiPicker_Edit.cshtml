@@ -61,7 +61,8 @@
                         </div>
                     </li>                   
                     <li data-ng-show="data.length==0 && uploads.length==0" class="empty-list table-row">
-                        <div class="upload-message table-cell">@T("Drop file here to upload")</div>
+                        <div data-ng-show="dragAndDropEnabled == true" class="upload-message table-cell">@T("Drop file here to upload")</div>
+                        <div data-ng-show="dragAndDropEnabled == false" class="upload-message table-cell">@T("No files selected")</div>
                     </li>                
                 </ul>
                 <ul class="upload-list table" data-ng-show="uploads.length > 0">
