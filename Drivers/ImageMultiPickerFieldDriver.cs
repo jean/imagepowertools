@@ -12,6 +12,7 @@ using Orchard;
 using Orchard.ContentManagement;
 using Orchard.ContentManagement.Drivers;
 using Orchard.ContentManagement.Handlers;
+using Amba.ImagePowerTools.Extensions;
 
 namespace Amba.ImagePowerTools.Drivers
 {
@@ -43,7 +44,7 @@ namespace Amba.ImagePowerTools.Drivers
                     var viewModel = new ImageMultiPickerFieldEditorViewModel
                     {
                         Field = field,
-                        Data = string.IsNullOrWhiteSpace(field.Data) ? "[]" : field.Data,
+                        Data = IsDataInvalid(field.Data) ? "[]" : field.Data,
                         FieldFolderName = _mediaFileSystemService.GetContentItemUploadFolder(part.Id, field.Name),
                         Settings = field.PartFieldDefinition.Settings.GetModel<ImageMultiPickerFieldSettings>()
                     };
@@ -52,13 +53,18 @@ namespace Amba.ImagePowerTools.Drivers
                 });
         }
 
+        private static bool IsDataInvalid(string data)
+        {
+            return string.IsNullOrWhiteSpace(data) || data.RegexRemove(@"\s") == "{{data|json}}";
+        }
+
         protected override DriverResult Editor(ContentPart part, ImageMultiPickerField field, IUpdateModel updater, dynamic shapeHelper)
         {
             var viewModel = new ImageMultiPickerFieldEditorViewModel();
             
             if (updater.TryUpdateModel(viewModel, GetPrefix(field, part), null, null))
-            {
-                field.Data = viewModel.Data;
+            {                
+                field.Data = IsDataInvalid(viewModel.Data) ? "[]" : viewModel.Data;
                 
                 var images = field.Images;
                 if (images != null && _settingsService.Settings.EnableContentItemFolderCleanup)

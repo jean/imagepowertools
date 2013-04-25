@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Amba.ImagePowerTools.ImageResizerFilters;
 using ImageResizer;
 using ImageResizer.Configuration;
+using ImageResizer.Plugins.Basic;
 using Orchard;
 using Amba.ImagePowerTools.Extensions;
 using Orchard.Logging;
@@ -115,9 +116,22 @@ namespace Amba.ImagePowerTools.Services
         {
             try
             {
-                if (settings.WasOneSpecified(GrayscaleFilter.FilterKey))
+                var sizeLimits = Config.Current.Plugins.Get<SizeLimiting>();
+                if (sizeLimits != null)
                 {
+                    sizeLimits.Limits.TotalBehavior = SizeLimits.TotalSizeBehavior.IgnoreLimits;
+                    
+                   // Config.Current.Plugins.Uninstall(sizeLimits);
+
+                }
+                if (settings.WasOneSpecified(GrayscaleFilter.SupportedKeys.ToArray()))
+                {
+                    
                     Config.Current.Plugins.GetOrInstall<GrayscaleFilter>();
+                }
+                if (settings.WasOneSpecified(BlurFilter.SupportedKeys.ToArray()))
+                {
+                    Config.Current.Plugins.GetOrInstall<BlurFilter>();
                 }
 
                 if (!url.StartsWith("/"))
@@ -207,6 +221,7 @@ namespace Amba.ImagePowerTools.Services
             {
                 Directory.CreateDirectory(cachedImageDir);
             }
+
             ImageBuilder.Current.Build(imageServerPath, cachedImageServerPath, settings);
         }
 

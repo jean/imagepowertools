@@ -10,7 +10,6 @@ namespace Amba.ImagePowerTools.ImageResizerFilters
 {
     public class GrayscaleFilter : BuilderExtension, IPlugin, IQuerystringPlugin
     {
-        public static string FilterKey = "tograyscale";
 
         public IPlugin Install(Config c)
         {
@@ -24,9 +23,11 @@ namespace Amba.ImagePowerTools.ImageResizerFilters
             return true;
         }
 
+        public static IEnumerable<string> SupportedKeys = new[] {"tograyscale", "ipt.grayscale"};
+
         public IEnumerable<string> GetSupportedQuerystringKeys()
         {
-            return new [] { FilterKey };
+            return SupportedKeys;
         }
 
         protected override RequestedAction PostCreateImageAttributes(ImageState s)

@@ -45,6 +45,15 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AForge">
+      <HintPath>Dependencies\AForge.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Imaging">
+      <HintPath>Dependencies\AForge.Imaging.dll</HintPath>
+    </Reference>
+    <Reference Include="AForge.Math">
+      <HintPath>Dependencies\AForge.Math.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dependencies\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -141,6 +150,7 @@
     <Compile Include="Controllers\MultipickerController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Extensions\IntExtension.cs" />
+    <Compile Include="ImageResizerFilters\BlurFilter.cs" />
     <Compile Include="ImageResizerFilters\GrayscaleFilter.cs" />
     <Compile Include="Migrations.cs" />
     <Compile Include="Models\ImagePowerToolsSettingsRecord.cs" />
@@ -207,6 +217,11 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Styles\media-multipicker.less" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\angular-last.min.js.map">
+      <DependentUpon>angular-last.js</DependentUpon>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

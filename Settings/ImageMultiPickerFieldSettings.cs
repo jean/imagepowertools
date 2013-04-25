@@ -34,7 +34,12 @@ namespace Amba.ImagePowerTools.Settings
 
         public IEnumerable<CustomFieldDefinition> CustomFieldsList
         {
-            get { return JsonConvert.DeserializeObject<List<CustomFieldDefinition>>(CustomFields); }
+            get
+            {
+                if (CustomFields == "{{customFields | json}}")
+                    CustomFields = "[]";
+                return JsonConvert.DeserializeObject<List<CustomFieldDefinition>>(CustomFields);
+            }
         }
 
         private int _previewWidth;
