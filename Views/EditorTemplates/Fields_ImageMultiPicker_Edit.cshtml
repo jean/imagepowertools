@@ -90,6 +90,7 @@
             .value('data', @Html.Raw(Model.Data))
             .value('options', {
                 id: '@(pickerId)',
+                uploadPath: "@(Url.Content("~/ipt/upload"))",
                 fieldFolder: "@Html.Raw(Model.FieldFolderName)",
                 pickerWindowUrl: "@Url.Action("Index", "Multipicker", new {area="Amba.ImagePowerTools"})"
             });

@@ -38,5 +38,6 @@ namespace Amba.ImagePowerTools.ViewModels.Multipicker
         public int Height { get; set; }
         public bool IsImage { get; set; }
         public string Extension { get; set; }
+        public string RelatedPath { get; set; }
     }
 }

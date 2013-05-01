@@ -71,13 +71,13 @@
                         {
                             <tr>
                                 <td style="width: 20px;">
-                                    <input type="checkbox" class="file-picker-checkbox" value="@(file.MediaFile.MediaPath)" name="selected"/>
+                                    <input type="checkbox" class="file-picker-checkbox" value="@(file.RelatedPath)" name="selected"/>
                                 </td>
                                 <td style="width: 100px; padding:4px;">
                                     <a href="@Url.ToAbsoluteUrl(file.MediaFile.MediaPath)" target="_blank">
                                         @if (file.IsImage)
                                         {
-                                            @Html.ResizedImage(file.MediaFile.MediaPath, settings: "width=100", isAbsoluteImageUrl:true)                                                                 
+                                            <img src="@Url.Content("~/ipt/resize" + file.RelatedPath + "?width=100")" alt=""/>                                                                 
                                         }
                                         else
                                         {

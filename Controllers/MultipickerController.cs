@@ -25,6 +25,7 @@ namespace Amba.ImagePowerTools.Controllers
         private readonly IImageResizerService _resizerService;
         private readonly ISwfService _swfService;
         private readonly IMediaFileSystemService _mediaFileSystemService;
+        private string _siteRoot;
 
         public IOrchardServices Services { get; set; }
 
@@ -94,6 +95,7 @@ namespace Amba.ImagePowerTools.Controllers
 
         public ActionResult Index(string mediaPath, string scope)
         {
+            _siteRoot = Url.Content("~/");
             if (mediaPath == ":last")
             {
                 var httpCookie = Request.Cookies[MediaPathCookieKey];
@@ -175,7 +177,7 @@ namespace Amba.ImagePowerTools.Controllers
             result.Extension = Path.GetExtension(serverPath);
             if (!string.IsNullOrWhiteSpace(result.Extension))
                 result.Extension = result.Extension.Trim('.').ToLower();
-
+            result.RelatedPath = "/" + file.MediaPath.Replace(_siteRoot, "").Trim('/');
             try
             {
                 SetFileSizes(serverPath, result);
@@ -183,7 +185,6 @@ namespace Amba.ImagePowerTools.Controllers
             catch 
             {
             }
-            
             return result;
         }
 

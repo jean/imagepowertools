@@ -116,25 +116,11 @@ namespace Amba.ImagePowerTools.Services
         {
             try
             {
-                var sizeLimits = Config.Current.Plugins.Get<SizeLimiting>();
-                if (sizeLimits != null)
-                {
-                    sizeLimits.Limits.TotalBehavior = SizeLimits.TotalSizeBehavior.IgnoreLimits;
-                    
-                   // Config.Current.Plugins.Uninstall(sizeLimits);
+                
+                if (string.IsNullOrWhiteSpace(url))
+                    return string.Empty;
 
-                }
-                if (settings.WasOneSpecified(GrayscaleFilter.SupportedKeys.ToArray()))
-                {
-                    
-                    Config.Current.Plugins.GetOrInstall<GrayscaleFilter>();
-                }
-                if (settings.WasOneSpecified(BlurFilter.SupportedKeys.ToArray()))
-                {
-                    Config.Current.Plugins.GetOrInstall<BlurFilter>();
-                }
-
-                if (!url.StartsWith("/"))
+                if (!url.StartsWith("/") && !url.StartsWith("~/"))
                 {
                     url = "/" + url;
                 }
@@ -199,6 +185,22 @@ namespace Amba.ImagePowerTools.Services
         private static void WriteResizedImage(string cachedImageServerPath, string imageServerPath,
                                               ResizeSettings settings)
         {
+            var sizeLimits = Config.Current.Plugins.Get<SizeLimiting>();
+            if (sizeLimits != null)
+            {
+                sizeLimits.Limits.TotalBehavior = SizeLimits.TotalSizeBehavior.IgnoreLimits;
+            }
+
+            if (settings.WasOneSpecified(GrayscaleFilter.SupportedKeys.ToArray()))
+            {
+                Config.Current.Plugins.GetOrInstall<GrayscaleFilter>();
+            }
+
+            if (settings.WasOneSpecified(BlurFilter.SupportedKeys.ToArray()))
+            {
+                Config.Current.Plugins.GetOrInstall<BlurFilter>();
+            }
+
             for (int i = 0; i < 10; i++)
             {
                 try

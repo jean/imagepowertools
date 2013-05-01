@@ -134,7 +134,7 @@
                 uploaders[uploadId] = xhr;
                 xhr.upload.addEventListener('progress', uploadProgress, false);
                 xhr.onreadystatechange = stateChange;
-                xhr.open('POST', '/ipt/upload');
+                xhr.open('POST', self.options.uploadPath);
 
                 xhr.setRequestHeader("Cache-Control", "no-cache");
                 xhr.setRequestHeader("Connection", "keep-alive");
