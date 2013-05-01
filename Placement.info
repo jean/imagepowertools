@@ -1,4 +1,5 @@
 ﻿<Placement>
  <Place Fields_ImageMultiPicker_Edit="Content:2.5"/>
  <Place Fields_ImageMultiPicker="Content:before" />
+  <Place Fields_ImageMultiPicker_SummaryAdmin="Content:after"/>
 </Placement>

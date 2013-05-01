@@ -22,11 +22,20 @@ namespace Amba.ImagePowerTools.Services
         string GetCleanFileExtension(string url);
         bool IsSupportedNonImage(string fileName);
         bool IsImage(string fileName);
+        bool IsImageExtension(string extension);
 
-        string ResizeImage(string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0,
-                           int quality = 0, string settings = "");
+        string ResizeImage(
+            string filePath, 
+            int width = 0, 
+            int height = 0, 
+            int maxWidth = 0, 
+            int maxHeight = 0,
+            int quality = 0, 
+            string settings = "");
 
-        string ResizeImage(string url, string settings);
+        string ResizeImage(
+            string filePath, 
+            string settings);
         void ClearCache();
         void CacheStatistics(out long fileCount, out long totalSize);
         void DeleteExpiredCache();
@@ -58,9 +67,14 @@ namespace Amba.ImagePowerTools.Services
             if (ext != null)
             {
                 var extension = ext.Trim('.').ToLower();
-                return ImageBuilder.Current.GetSupportedFileExtensions().Any(x => x.ToLower() == extension);
+                return IsImageExtension(extension);
             }
             return false;
+        }
+
+        public bool IsImageExtension(string extension)
+        {
+            return ImageBuilder.Current.GetSupportedFileExtensions().Any(x => x.ToLower() == extension);
         }
 
         private string CreateMd5Hash(string input)
@@ -77,7 +91,7 @@ namespace Amba.ImagePowerTools.Services
         }
 
         public string ResizeImage(
-            string url, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0,
+            string filePath, int width = 0, int height = 0, int maxWidth = 0, int maxHeight = 0,
             int quality = 0,
             string settings = "")
         {
@@ -93,16 +107,20 @@ namespace Amba.ImagePowerTools.Services
             if (maxWidth > 0)
                 resizeSettings.MaxWidth = maxWidth;
             return
-                Task.Factory.StartNew(() => GetResizedUrl(url, resizeSettings)).Result;
+                Task.Factory.StartNew(() => GetResizedUrl(filePath, resizeSettings)).Result;
         }
 
-        public string ResizeImage(string url, string settings)
+        public string ResizeImage(string filePath, string settings)
         {
-            return Task.Factory.StartNew(() => GetResizedUrl(url, new ResizeSettings(settings))).Result;
+            return Task.Factory.StartNew(
+                () => GetResizedUrl(filePath, new ResizeSettings(settings))
+            ).Result;
         }
 
-        private bool IsResizeSettingsValid(ResizeSettings settings)
+        private bool IsResizeSettingsValid(string url, ResizeSettings settings)
         {
+            if (string.IsNullOrWhiteSpace(url))
+                return false;
             if (_settingsService == null)
                 return true;
             return
@@ -112,43 +130,45 @@ namespace Amba.ImagePowerTools.Services
                 settings.MaxHeight < _settingsService.Settings.MaxImageHeight;
         }
 
+        private string UnifyFilePath(string filePath)
+        {
+            if (!filePath.StartsWith("/") && !filePath.StartsWith("~/"))
+            {
+                filePath = "/" + filePath;
+            }
+            return filePath;
+        }
+
         private string GetResizedUrl(string url, ResizeSettings settings)
         {
             try
             {
-                
-                if (string.IsNullOrWhiteSpace(url))
+                if (!IsResizeSettingsValid(url, settings))
                     return string.Empty;
 
-                if (!url.StartsWith("/") && !url.StartsWith("~/"))
-                {
-                    url = "/" + url;
-                }
-
-                if (!IsResizeSettingsValid(settings))
-                {
-                    return "";
-                }
-
+                url = UnifyFilePath(url);
+                
                 var imageServerPath = _mediaFileSystemService.GetServerPath(url);
                 if (!File.Exists(imageServerPath))
                 {
-                    return "";
+                    return string.Empty;
                 }
 
                 imageServerPath = FilterUnsupportedFiles(imageServerPath);
                 if (string.IsNullOrWhiteSpace(imageServerPath))
-                    return "";
+                    return string.Empty;
 
                 var cachedImagePath = GetImageCachePath(url, settings);
                 string cachedImageServerPath = _mediaFileSystemService.GetServerPath(cachedImagePath);
 
                 if (!File.Exists(cachedImageServerPath))
                 {
+                    // file not in cache, so lets resize
                     WriteResizedImage(cachedImageServerPath, imageServerPath, settings);
                 }
                 else
                 {
+                    // check if file modified
                     var cacheFileInfo = new FileInfo(cachedImageServerPath);
                     var imageFileInfo = new FileInfo(imageServerPath);
                     if (cacheFileInfo.LastWriteTimeUtc < imageFileInfo.LastWriteTimeUtc)
@@ -195,7 +215,6 @@ namespace Amba.ImagePowerTools.Services
             {
                 Config.Current.Plugins.GetOrInstall<GrayscaleFilter>();
             }
-
             if (settings.WasOneSpecified(BlurFilter.SupportedKeys.ToArray()))
             {
                 Config.Current.Plugins.GetOrInstall<BlurFilter>();
@@ -215,8 +234,7 @@ namespace Amba.ImagePowerTools.Services
             }
         }
 
-        private static void WriteResizedFile(string cachedImageServerPath, string imageServerPath,
-                                             ResizeSettings settings)
+        private static void WriteResizedFile(string cachedImageServerPath, string imageServerPath, ResizeSettings settings)
         {
             string cachedImageDir = Path.GetDirectoryName(cachedImageServerPath);
             if (!string.IsNullOrWhiteSpace(cachedImageDir) && !Directory.Exists(cachedImageServerPath))

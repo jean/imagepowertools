@@ -4,20 +4,10 @@ using Newtonsoft.Json;
 
 namespace Amba.ImagePowerTools.Settings
 {
-
-    public class CustomFieldDefinition
-    {
-        [JsonProperty(PropertyName = "name")]
-        public string Name { get; set; }
-        [JsonProperty(PropertyName = "displayName")]
-        public string DisplayName { get; set; }
-        [JsonProperty(PropertyName = "type")]
-        public string Type { get; set; }
-    }
-
     public class ImageMultiPickerFieldSettings
     {
         public string Hint { get; set; }
+        public bool ShowInAdminList { get; set; }
 
         private string _customFields;
 
@@ -27,6 +17,10 @@ namespace Amba.ImagePowerTools.Settings
             {
                 if (string.IsNullOrWhiteSpace(_customFields))
                     _customFields = "[{name:'descr', displayName:'', type:'textarea'}]";
+                else if (_customFields == "{{customFields | json}}")
+                {
+                    _customFields = "[]";
+                }
                 return _customFields;
             }
             set { _customFields = value; }

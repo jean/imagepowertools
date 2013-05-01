@@ -54,30 +54,30 @@
                     }                                                   
                 <form>
                     <table class="file-browser" style="min-width: 340px;">
-                        @foreach (var folder in Model.MediaFolders)
+                        @foreach (var folder in Model.Folders)
                         {
                             <tr class="folder-row">
                                 <td class="icon-col" style="width: 20px;">
                                     <span class="folder-icon"></span>
                                 </td>
                                 <td colspan="2">
-                                    <a href="@Model.GetPickerUrl(folder.MediaPath)">
+                                    <a href="@Model.GetPickerUrl(folder.SitePath)">
                                         <b>@folder.Name</b>
                                     </a>
                                 </td>
                             </tr>
                         }
-                        @foreach (var file in Model.MediaFiles)
+                        @foreach (var file in Model.Files)
                         {
                             <tr>
                                 <td style="width: 20px;">
-                                    <input type="checkbox" class="file-picker-checkbox" value="@(file.RelatedPath)" name="selected"/>
+                                    <input type="checkbox" class="file-picker-checkbox" value="@(file.SitePath)" name="selected"/>
                                 </td>
                                 <td style="width: 100px; padding:4px;">
-                                    <a href="@Url.ToAbsoluteUrl(file.MediaFile.MediaPath)" target="_blank">
+                                    <a href="@Url.Content("~" + file.SitePath)" target="_blank">
                                         @if (file.IsImage)
                                         {
-                                            <img src="@Url.Content("~/ipt/resize" + file.RelatedPath + "?width=100")" alt=""/>                                                                 
+                                            <img src="@Url.Content("~/ipt/resize" + file.SitePath + "?width=100")" alt=""/>                                                                 
                                         }
                                         else
                                         {
@@ -93,7 +93,7 @@
                                         @if (isSearch)
                                         {
                                             var path = string.Empty;
-                                            foreach (var folder in file.MediaFile.FolderName.Split('/'))
+                                            foreach (var folder in file.SiteFolder.Split('/'))
                                             {
                                                 if (string.IsNullOrWhiteSpace(folder))
                                                 {
@@ -107,7 +107,7 @@
                                                 html += "<a href=\'" + Model.GetPickerUrl(path) + "'>" + folder + "</a>/";
                                             }
                                         }
-                                        @Html.Raw(html)<a href="@file.MediaFile.MediaPath" target="_blank">@file.MediaFile.Name</a>
+                                        @Html.Raw(html)<a href="@file.SitePath" target="_blank">@file.FileName</a>
                                     </div>
                                     <div>
                                         @if (file.Width > 0 && file.Height > 0)

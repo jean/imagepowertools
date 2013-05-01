@@ -32,5 +32,6 @@ namespace Amba.ImagePowerTools.ViewModels.Admin
 
         [Required]
         public bool EnableContentItemFolderCleanup { get; set; }
+
     }
 }

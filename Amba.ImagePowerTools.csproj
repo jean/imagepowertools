@@ -158,6 +158,7 @@
     <Compile Include="Services\MediaFileSystemService.cs" />
     <Compile Include="Services\PowerToolsSettingsService.cs" />
     <Compile Include="Services\SwfService.cs" />
+    <Compile Include="Settings\CustomFieldDefinition.cs" />
     <Compile Include="Settings\ImageMultiPickerFieldEditorEvents.cs" />
     <Compile Include="Settings\ImageMultiPickerFieldSettings.cs" />
     <Compile Include="SwfHeaderReader.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="Tasks\CacheCleanupTask.cs" />
     <Compile Include="ViewModels\Admin\CacheStatisticsViewModel.cs" />
     <Compile Include="ViewModels\Admin\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\FolderViewModel.cs" />
     <Compile Include="ViewModels\Multipicker\BreadcrumbViewModel.cs" />
     <Compile Include="Controllers\ImageResizerController.cs" />
     <Compile Include="Drivers\DriverBase.cs" />
@@ -184,8 +186,8 @@
     <Compile Include="Services\ImageResizerService.cs" />
     <Compile Include="Services\ImageTypes.cs" />
     <Compile Include="Services\QuerystringBuilder.cs" />
-    <Compile Include="Services\ResizeSettingTypes.cs" />
     <Compile Include="ViewModels\ImageMultiPickerFieldEditorViewModel.cs" />
+    <Compile Include="ViewModels\FileViewModel.cs" />
     <Compile Include="ViewModels\Multipicker\MediaFolderEditViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -222,6 +224,9 @@
     <Content Include="Scripts\angular-last.min.js.map">
       <DependentUpon>angular-last.js</DependentUpon>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Fields_ImageMultiPicker_SummaryAdmin.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

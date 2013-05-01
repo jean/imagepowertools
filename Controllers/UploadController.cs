@@ -22,10 +22,6 @@ namespace Amba.ImagePowerTools.Controllers
             if (file == null || file.ContentLength == 0)
                 return Content("No file in request");
 
-            if (!folder.ToLower().StartsWith(_mediaFileSystemService.GetMediaFolderRoot().ToLower()))
-            {
-                return Content("Forbidden");
-            }
             var isSavingSuccess = 
                 Task.Factory.StartNew(() => _mediaFileSystemService.SaveFile(file, folder)).Result;
             

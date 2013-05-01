@@ -11,11 +11,18 @@ namespace Amba.ImagePowerTools.ViewModels.Multipicker
         public string SearchFilter { get; set; }
         public string FolderName { get; set; }
         public string MediaPath { get; set; }
-        public IEnumerable<MediaFolder> MediaFolders { get; set; }
-        public IEnumerable<ImageFileViewModel> MediaFiles { get; set; }
+        public IEnumerable<FolderViewModel> Folders { get; set; }
+        public IEnumerable<FileViewModel> Files { get; set; }
         public string PublicPath { get; set; }
-
         public IEnumerable<BreadcrumbViewModel> BreadCrumbs { get; set; }
+        public string Scope { get; set; }
+        public bool IsFolderNotExists { get; set; }
+
+        public MediaFolderEditViewModel()
+        {
+            Folders = new List<FolderViewModel>();
+            Files = new List<FileViewModel>();
+        }
 
         public string GetPickerUrl(string folderMediaPath)
         {
@@ -26,18 +33,6 @@ namespace Amba.ImagePowerTools.ViewModels.Multipicker
             return result;
         }
 
-        public string Scope { get; set; }
-
-        public bool IsFolderNotExists { get; set; }
-    }
-
-    public class ImageFileViewModel
-    {
-        public MediaFile MediaFile { get; set; }
-        public int Width { get; set; }
-        public int Height { get; set; }
-        public bool IsImage { get; set; }
-        public string Extension { get; set; }
-        public string RelatedPath { get; set; }
+        
     }
 }

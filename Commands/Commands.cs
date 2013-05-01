@@ -3,13 +3,13 @@ using Orchard.Commands;
 
 namespace Amba.ImagePowerTools.Commands
 {
-    public class Go2SeeCommands : DefaultOrchardCommandHandler
+    public class IptCommands : DefaultOrchardCommandHandler
     {
         private readonly IPowerToolsSettingsService _settingsService;
         private readonly IMediaFileSystemService _mediaFileSystemService;
         private readonly IImageResizerService _imageResizerService;
 
-        public Go2SeeCommands(
+        public IptCommands(
             IPowerToolsSettingsService settingsService,
             IMediaFileSystemService mediaFileSystemService,
             IImageResizerService imageResizerService)

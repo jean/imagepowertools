@@ -10,11 +10,6 @@ namespace Amba.ImagePowerTools.HtmlHelpers
 {
     public static class HtmlImageResizeHelper
     {
-        public static IHtmlString ToAbsoluteUrl(this UrlHelper url, string relativeUrl)
-        {
-            return new HtmlString(relativeUrl.ToAbsoluteUrl());
-        }
-
         public static IHtmlString ResizedImageUrl(
             this UrlHelper helper, string path, int width = 0, int height = 0,
             string settings = "",

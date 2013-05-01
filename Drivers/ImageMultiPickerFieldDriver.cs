@@ -29,11 +29,24 @@ namespace Amba.ImagePowerTools.Drivers
 
         protected override DriverResult Display(ContentPart part, ImageMultiPickerField field, string displayType, dynamic shapeHelper)
         {
+            ImageMultiPickerFieldSettings settings = null;
+            if (displayType == "SummaryAdmin")
+            {
+                settings = field.PartFieldDefinition.Settings.GetModel<ImageMultiPickerFieldSettings>();
+                if (!settings.ShowInAdminList)
+                    return new DriverResult();
+                return ContentShape("Fields_ImageMultiPicker_SummaryAdmin", GetDifferentiator(field, part),
+                () => shapeHelper.Fields_ImageMultiPicker_SummaryAdmin(
+                    Settings: settings,
+                    Name: field.Name,
+                    Field: field));
+            }
+            settings = field.PartFieldDefinition.Settings.GetModel<ImageMultiPickerFieldSettings>();
             return ContentShape("Fields_ImageMultiPicker", GetDifferentiator(field, part),
-                () =>
-                {
-                    return shapeHelper.Fields_ImageMultiPicker(Name: field.Name, Field: field);
-                });
+                () => shapeHelper.Fields_ImageMultiPicker(
+                    Settings:settings,
+                    Name: field.Name, 
+                    Field: field));
         }
 
         protected override DriverResult Editor(ContentPart part, ImageMultiPickerField field, dynamic shapeHelper)

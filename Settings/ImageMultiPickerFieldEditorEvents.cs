@@ -29,10 +29,10 @@ namespace Amba.ImagePowerTools.Settings
             var model = new ImageMultiPickerFieldSettings();
             if (updateModel.TryUpdateModel(model, "ImageMultiPickerFieldSettings", null, null))
             {
+                builder.WithSetting("ImageMultiPickerFieldSettings.ShowInAdminList", model.ShowInAdminList.ToString());
                 builder.WithSetting("ImageMultiPickerFieldSettings.Hint", model.Hint);
                 builder.WithSetting("ImageMultiPickerFieldSettings.CustomFields", model.CustomFields);
-                builder.WithSetting("ImageMultiPickerFieldSettings.PreviewWidth",
-                                    model.PreviewWidth.ToString(CultureInfo.InvariantCulture));
+                builder.WithSetting("ImageMultiPickerFieldSettings.PreviewWidth", model.PreviewWidth.ToString(CultureInfo.InvariantCulture));
             }
 
             yield return DefinitionTemplate(model);

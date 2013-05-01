@@ -2,43 +2,81 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
 using Amba.ImagePowerTools.Models;
+using Amba.ImagePowerTools.ViewModels;
 using Orchard;
 using Orchard.Environment.Configuration;
 using Orchard.Logging;
-using Orchard.Media.Models;
-using Orchard.Media.Services;
 using Amba.ImagePowerTools.Extensions;
+using FileViewModel = Amba.ImagePowerTools.ViewModels.FileViewModel;
 
 namespace Amba.ImagePowerTools.Services
 {
     public interface IMediaFileSystemService : IDependency
     {
-        IEnumerable<MediaFile> FindFiles(string mediaPath, string pattern);
-        string GetMediaFolderRoot();
+        IEnumerable<FileViewModel> FindFiles(string mediaPath, string pattern);
+        
         string GetServerPath(string path);
         bool SaveFile(HttpPostedFileBase file, string folder);
         string GetContentItemUploadFolder(int id, string fieldName);
         void DeleteNotUsedFiles(string folder, IEnumerable<SelectedImage> usedImages);
-        IEnumerable<string> GetFolderFiles(string uploadFolder);
+
+        IEnumerable<FolderViewModel> GetMediaFolders(string siteFolderPath);
+
+        IEnumerable<FileViewModel> GetMediaFiles(string siteFolderPath);
+
+        bool IsFolderExists(string siteFolder);
+
     }
 
     public class MediaFileSystemService : IMediaFileSystemService
     {
-        private readonly IMediaService _mediaService;
-        private readonly ShellSettings _shellSettings;
+        private readonly IOrchardServices _services;
+
+        private IImageResizerService _imageResizerService;
+        private IImageResizerService ResizerService
+        {
+            get
+            {
+                if (_imageResizerService == null)
+                    _imageResizerService = _services.WorkContext.Resolve<IImageResizerService>();
+                return _imageResizerService;
+            }
+        }
+
+        private ISwfService _swfService;
+        private ISwfService SwfService
+        {
+            get
+            {
+                if (_swfService == null)
+                    _swfService = _services.WorkContext.Resolve<ISwfService>();
+                return _swfService;
+            }
+        }
+
+        //ex: /Media/Default
+        private readonly string _mediaFolderRoot;
+        //ex: c:\orchard\src\orchard.web\Media\Default
         private readonly string _mediaServerPath;
+        //ex :\orchard\src\orchard.web\ 
+        private readonly string _siteRootPath;
+        
+
+        private readonly ShellSettings _shellSettings;
+        
         public ILogger Logger { get; set; }
 
-        public MediaFileSystemService(IMediaService mediaService, ShellSettings shellSettings)
+        public MediaFileSystemService(ShellSettings shellSettings, IOrchardServices services)
         {
-            _mediaService = mediaService;
             _shellSettings = shellSettings;
+            _services = services;
             var mediaPath = GetServerPath("Media");
             _mediaServerPath = Path.Combine(mediaPath, _shellSettings.Name);
+            _mediaFolderRoot = "/Media/" + _shellSettings.Name;
+            _siteRootPath = GetServerPath("/");
             Logger = NullLogger.Instance;
         }
 
@@ -62,17 +100,23 @@ namespace Amba.ImagePowerTools.Services
             }
         }
 
+        private IEnumerable<string> GetFolderFiles(string uploadFolder)
+        {
+            var serverPath = GetServerPath(uploadFolder);
+            if (!Directory.Exists(serverPath))
+                return new List<string>();
+            var mediaServerLength = GetServerPath("").Length;
+            return Directory.GetFiles(serverPath)
+                .Select(x => x.Substring(mediaServerLength - 1).Replace('\\', '/'))
+                .ToList();
+        }
+
         public string GetServerPath(string path)
         {
             path = path.RegexRemove(@"^~/").TrimStart('/');
             return HostingEnvironment.IsHosted
                                 ? HostingEnvironment.MapPath("~/" + path) ?? ""
                                 : Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-        }
-
-        public string GetMediaFolderRoot()
-        {
-            return "/Media/" + _shellSettings.Name;
         }
 
         public bool SaveFile(HttpPostedFileBase file, string folder)
@@ -97,47 +141,160 @@ namespace Amba.ImagePowerTools.Services
 
         public string GetContentItemUploadFolder(int id, string fieldName)
         {
-            return GetMediaFolderRoot() + Consts.ContentItemUploadFolderPrefix + id + "_" + fieldName;
+            return _mediaFolderRoot + Consts.ContentItemUploadFolderPrefix + id + "_" + fieldName;
         }
 
-        public IEnumerable<string> GetFolderFiles(string uploadFolder)
+        public IEnumerable<FolderViewModel> GetMediaFolders(string siteFolderPath)
         {
-            var serverPath = GetServerPath(uploadFolder);
+            var folderPath = GetFolderServerPath(siteFolderPath);
+            var directoryInfo = new DirectoryInfo(folderPath);
+            return 
+                directoryInfo.GetDirectories()
+                .Select(x => CreateFolderViewModel(x))
+                .OrderBy(x => x.Name)
+                .ToList();
+        }
+
+        private string GetFolderServerPath(string siteFolderPath)
+        {
+            if (string.IsNullOrWhiteSpace(siteFolderPath))
+            {
+                siteFolderPath = _mediaFolderRoot;
+            }
+            var serverPath = GetServerPath(siteFolderPath);
             if (!Directory.Exists(serverPath))
-                return new List<string>();
-            var mediaServerLength = GetServerPath("").Length;
-            return Directory.GetFiles(serverPath)
-                .Select(x => x.Substring(mediaServerLength - 1).Replace('\\', '/'))
-                .ToList();
+            {
+                serverPath = _mediaServerPath;
+            }
+            return serverPath;
         }
 
-        public IEnumerable<MediaFile> FindFiles(string mediaPath, string pattern)
+        private FolderViewModel CreateFolderViewModel(DirectoryInfo folderInfo)
         {
-            var searchFolder = Path.Combine(_mediaServerPath, mediaPath);
-            var files = Directory.GetFiles(searchFolder, pattern, SearchOption.AllDirectories)
-                .Take(100)
-                .AsParallel()
-                .Select(x => CreateMediaFile(x))
-                .ToList();
+            var result = new FolderViewModel();
+            result.Name = folderInfo.Name;
+            result.SitePath = GetSitePath(folderInfo.FullName);
+            return result;
+        }
+
+        public IEnumerable<FileViewModel> GetMediaFiles(string siteFolderPath)
+        {
+            var searchFolder = GetFolderServerPath(siteFolderPath);
+            var files = Directory.GetFiles(searchFolder, "*.*", SearchOption.TopDirectoryOnly)
+                         .Select(x => CreateFileViewModel(x))
+                         .OrderBy(x => x.FileName)
+                         .ToList();
+            files.AsParallel()
+                 .WithDegreeOfParallelism(Environment.ProcessorCount*2)
+                 .ForEach(x => ExtendFileViewModel(x));
+
             return files;
         }
 
-        
+        public bool IsFolderExists(string siteFolder)
+        {
+            if (string.IsNullOrWhiteSpace(siteFolder))
+                return true;
+            var serverPath = GetServerPath(siteFolder);
+            return Directory.Exists(serverPath);
+        }
 
-        private MediaFile CreateMediaFile(string serverFilePath)
+        public IEnumerable<FileViewModel> FindFiles(string mediaPath, string pattern)
+        {
+            var searchFolder = GetFolderServerPath(mediaPath);
+            var files = Directory.GetFiles(searchFolder, pattern, SearchOption.AllDirectories)
+                .Take(100)
+                .Select(x => CreateFileViewModel(x))
+                .OrderBy(x => x.FileName)
+                .ToList();
+            files.AsParallel()
+                 .WithDegreeOfParallelism(Environment.ProcessorCount*2)
+                 .ForEach(x => ExtendFileViewModel(x));
+            return files;
+        }
+
+        private string GetSitePath(string serverFilePath)
+        {
+            var path = serverFilePath.Substring(_siteRootPath.Length - 1);
+            return "/" + path.Replace('\\', '/').Trim('/');
+        }
+
+        private string GetSiteFolder(string sitePath, string fileName)
+        {
+            return sitePath.Substring(0, sitePath.Length - fileName.Length);
+        }
+
+        private string GetDisplayPath(string sitePath)
+        {
+            return sitePath.Substring(_mediaFolderRoot.Length);
+        }
+
+        private FileViewModel CreateFileViewModel(string serverFilePath)
         {
             var fileInfo = new FileInfo(serverFilePath);
-            var relativePath = serverFilePath.Substring(_mediaServerPath.Length).Replace("\\", "/").Trim('/', '\\');
-            relativePath = relativePath.Substring(0, relativePath.Length - fileInfo.Name.Length);
-            var mediaFile = new MediaFile
+            var result = new FileViewModel
             {
-                Name = fileInfo.Name,
-                Type = fileInfo.Extension,
-                FolderName = relativePath,
+                FileName = fileInfo.Name,
+                Extension = fileInfo.Extension.Trim('.').ToLower(),
                 Size = fileInfo.Length,
-                MediaPath = _mediaService.GetMediaPublicUrl(relativePath, fileInfo.Name)
+                ServerPath = serverFilePath,
+                SitePath = GetSitePath(serverFilePath),
             };
-            return mediaFile;
+            result.SiteFolder = GetSiteFolder(result.SitePath, fileInfo.Name);
+            result.DisplayPath = GetDisplayPath(result.SitePath);
+            return result;
         }
+
+        private FileViewModel ExtendFileViewModel(FileViewModel file)
+        {
+            file.IsImage = ResizerService.IsImageExtension(file.Extension);
+            try
+            {
+                SetFileSizes(file);
+            }
+            catch
+            {
+            }
+            return file;
+        }
+
+        private void SetFileSizes(FileViewModel file)
+        {
+            if (file.IsImage)
+            {
+                var size = ImageHeader.GetDimensions(file.ServerPath);
+                file.Width = size.Width;
+                file.Height = size.Height;
+            }
+            else if (file.Extension == "swf")
+            {
+                int width, height;
+                SwfService.GetSwfFileDimensions(file.ServerPath, out width, out height);
+                file.Width = width;
+                file.Height = height;
+            }
+        } 
+
+        /*
+        [HttpPost]
+        public JsonResult CreateFolder(string path, string folderName)
+        {
+            if (!Services.Authorizer.Authorize(Permissions.ManageMedia))
+            {
+                return Json(new {Success = false, Message = T("Couldn't create media folder").ToString()});
+            }
+
+            try
+            {
+                _mediaService.CreateFolder(HttpUtility.UrlDecode(path), folderName);
+                return Json(new {Success = true, Message = ""});
+            }
+            catch (Exception exception)
+            {
+                return
+                    Json(new {Success = false, Message = T("Creating Folder failed: {0}", exception.Message).ToString()});
+            }
+        }
+         */ 
     }
 }

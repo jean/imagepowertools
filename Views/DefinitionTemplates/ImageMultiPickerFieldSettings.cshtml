@@ -92,3 +92,9 @@
     <span class="hint">@T("The help text is written under the field when authors are selecting content items.")</span>
     @Html.ValidationMessageFor(m => m.Hint)
 </fieldset>
+<fieldset>
+    @Html.CheckBoxFor(m => m.ShowInAdminList)
+    <label class="forcheckbox" for="@Html.FieldIdFor(m => m.ShowInAdminList)">@T("Show in admin list")</label>
+    <span class="hint">@T("If option enabled, images will be shown in content item list in admin.")</span>
+    @Html.ValidationMessageFor(m => m.ShowInAdminList)
+</fieldset>

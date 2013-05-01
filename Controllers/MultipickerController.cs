@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -8,10 +7,7 @@ using Amba.ImagePowerTools.Services;
 using Amba.ImagePowerTools.ViewModels.Admin;
 using Amba.ImagePowerTools.ViewModels.Multipicker;
 using Orchard;
-using Orchard.Localization;
-using Orchard.Media;
-using Orchard.Media.Models;
-using Orchard.Media.Services;
+using Orchard.Environment.Configuration;
 using Orchard.Themes;
 using Orchard.UI.Admin;
 
@@ -21,50 +17,54 @@ namespace Amba.ImagePowerTools.Controllers
     [Admin]
     public class MultipickerController : Controller
     {
-        private readonly IMediaService _mediaService;
-        private readonly IImageResizerService _resizerService;
-        private readonly ISwfService _swfService;
         private readonly IMediaFileSystemService _mediaFileSystemService;
-        private string _siteRoot;
+        private readonly ShellSettings _shellSettings;
 
         public IOrchardServices Services { get; set; }
 
         public MultipickerController(
             IMediaFileSystemService mediaFileSystemService,
-            IOrchardServices services, 
-            ISwfService swfService, 
-            IMediaService mediaService, 
-            IImageResizerService resizerService)
+            IOrchardServices services, ShellSettings shellSettings)
         {
             Services = services;
-            _swfService = swfService;
-            _mediaService = mediaService;
-            _resizerService = resizerService;
+            _shellSettings = shellSettings;
             _mediaFileSystemService = mediaFileSystemService;
-            T = NullLocalizer.Instance;
         }
 
-        public Localizer T { get; set; }
-
-        private bool IsFolderExists(string mediaPath)
+        const string MediaPathCookieKey = "AmbaImageMuliPicker.MediaPath";
+        private string LastSavedMediaPath
         {
-            if (string.IsNullOrWhiteSpace(mediaPath))
-                return true;
-            var publicUrl = _mediaService.GetPublicUrl(
-                Path.Combine(_mediaFileSystemService.GetMediaFolderRoot(), mediaPath)
-                );
-             
-            var serverPath = Server.MapPath("~" + publicUrl);
-            return Directory.Exists(serverPath);
+            get
+            {
+                string mediaPath;
+                var httpCookie = Request.Cookies[MediaPathCookieKey];
+                if (httpCookie != null)
+                {
+                    mediaPath = httpCookie.Value;
+                    if (!_mediaFileSystemService.IsFolderExists(mediaPath))
+                    {
+                        mediaPath = string.Empty;
+                    }
+                }
+                else
+                {
+                    mediaPath = string.Empty;
+                }
+                return mediaPath;
+            }
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    Response.Cookies.Add(new HttpCookie(MediaPathCookieKey, value) { Expires = DateTime.Now.AddMonths(1) });
+                }
+            }
         }
 
-        public ActionResult Search(string mediaPath, string scope, string search)
+        public ActionResult Search(string mediaPath, string scope, string search = "")
         {
-            if (string.IsNullOrWhiteSpace(mediaPath))
-                mediaPath = string.Empty;
             mediaPath = mediaPath.Trim();
-
-            if (!IsFolderExists(mediaPath))
+            if (!_mediaFileSystemService.IsFolderExists(mediaPath))
             {
                 var emptyModel = new MediaFolderEditViewModel
                     {
@@ -74,54 +74,30 @@ namespace Amba.ImagePowerTools.Controllers
             }
 
             var searchFilter = ("*" + search + "*").Replace("**", "*");
-            var files = _mediaFileSystemService.FindFiles(mediaPath, searchFilter)
-                .Select(x => CreateFileViewModel(x));
+            var files = _mediaFileSystemService.FindFiles(mediaPath, searchFilter);
 
             var model = new MediaFolderEditViewModel
             {
-                MediaFiles = files,
-                MediaFolders = new List<MediaFolder>(),
+                Files = files,
                 MediaPath = mediaPath,
                 Scope = scope,
                 BreadCrumbs = CreateBreadCrumbs(mediaPath),
                 SearchFilter = search
             };
-            ViewData["Service"] = _mediaService;
-
             return View("Index", model);
         }
 
-        const string MediaPathCookieKey = "AmbaImageMuliPicker.MediaPath";
-
         public ActionResult Index(string mediaPath, string scope)
         {
-            _siteRoot = Url.Content("~/");
             if (mediaPath == ":last")
             {
-                var httpCookie = Request.Cookies[MediaPathCookieKey];
-                if (httpCookie != null)
-                {
-                    mediaPath = httpCookie.Value;
-                    if (!IsFolderExists(mediaPath))
-                    {
-                        mediaPath = string.Empty;
-                    }
-                }
-                else
-                {
-                    mediaPath = string.Empty;
-                }
+                mediaPath = LastSavedMediaPath;
             }
             if (string.IsNullOrWhiteSpace(mediaPath))
                 mediaPath = string.Empty;
             mediaPath = mediaPath.Trim();
 
-            if (!string.IsNullOrWhiteSpace(mediaPath))
-            {
-                Response.Cookies.Add(new HttpCookie(MediaPathCookieKey, mediaPath){Expires = DateTime.Now.AddMonths(1)});
-            }
-
-            if (!IsFolderExists(mediaPath))
+            if (!_mediaFileSystemService.IsFolderExists(mediaPath))
             {
                 var emptyModel = new MediaFolderEditViewModel
                     {
@@ -129,24 +105,19 @@ namespace Amba.ImagePowerTools.Controllers
                     };
                 return View(emptyModel);
             }
-            var mediaFolders = _mediaService.GetMediaFolders(mediaPath)
-                .OrderBy(x => x.Name)
-                .ToList();
-            var mediaFiles = _mediaService.GetMediaFiles(mediaPath)
-                .Where(x => _resizerService.IsImage(x.Name) || _resizerService.IsSupportedNonImage(x.Name))
-                .AsParallel()
-                .Select(x => CreateFileViewModel(x))
-                .OrderBy(x => x.MediaFile.Name)
-                .ToList();
+
+            LastSavedMediaPath = mediaPath;
+
+            var mediaFolders = _mediaFileSystemService.GetMediaFolders(mediaPath);
+            var mediaFiles = _mediaFileSystemService.GetMediaFiles(mediaPath);
             var model = new MediaFolderEditViewModel
                 {
-                    MediaFiles = mediaFiles, 
-                    MediaFolders = mediaFolders, 
+                    Files = mediaFiles, 
+                    Folders = mediaFolders, 
                     MediaPath = mediaPath,
                     Scope = scope,
                     BreadCrumbs = CreateBreadCrumbs(mediaPath)
                 };
-            ViewData["Service"] = _mediaService;
             return View(model);
         }
 
@@ -161,76 +132,11 @@ namespace Amba.ImagePowerTools.Controllers
                 {
                     path += (j != 0 ? "/" : "") + paths[j];
                 }
+                if (paths[i] == "Media" || paths[i] == _shellSettings.Name || string.IsNullOrWhiteSpace(paths[i]))
+                    continue;
                 result.Add(new BreadcrumbViewModel {FolderName = paths[i], MediaPath = path});
             }
             return result;
-        }
-
-        private ImageFileViewModel CreateFileViewModel(MediaFile file)
-        {
-            var result = new ImageFileViewModel
-                {
-                    MediaFile = file
-                };
-                
-            var serverPath = Server.MapPath("~/" + file.MediaPath);
-            result.IsImage = _resizerService.IsImage(serverPath);
-            result.Extension = Path.GetExtension(serverPath);
-            if (!string.IsNullOrWhiteSpace(result.Extension))
-                result.Extension = result.Extension.Trim('.').ToLower();
-            if (_siteRoot != "/")
-            {
-                result.RelatedPath = "/" + file.MediaPath.Replace(_siteRoot, "").Trim('/');
-            }
-            else
-            {
-                result.RelatedPath = file.MediaPath;
-            }
-            try
-            {
-                SetFileSizes(serverPath, result);
-            }
-            catch 
-            {
-            }
-            return result;
-        }
-
-        private void SetFileSizes(string serverPath, ImageFileViewModel result)
-        {
-            if (result.IsImage)
-            {
-                var size = ImageHeader.GetDimensions(serverPath);
-                result.Width = size.Width;
-                result.Height = size.Height;
-            }
-            else if (result.Extension == "swf")
-            {
-                int width, height;
-                _swfService.GetSwfFileDimensions(serverPath, out width, out height);
-                result.Width = width;
-                result.Height = height;
-            }
-        }
-
-        [HttpPost]
-        public JsonResult CreateFolder(string path, string folderName)
-        {
-            if (!Services.Authorizer.Authorize(Permissions.ManageMedia))
-            {
-                return Json(new {Success = false, Message = T("Couldn't create media folder").ToString()});
-            }
-
-            try
-            {
-                _mediaService.CreateFolder(HttpUtility.UrlDecode(path), folderName);
-                return Json(new {Success = true, Message = ""});
-            }
-            catch (Exception exception)
-            {
-                return
-                    Json(new {Success = false, Message = T("Creating Folder failed: {0}", exception.Message).ToString()});
-            }
         }
     }
 }
