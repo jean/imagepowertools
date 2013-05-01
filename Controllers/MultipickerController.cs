@@ -172,12 +172,20 @@ namespace Amba.ImagePowerTools.Controllers
                 {
                     MediaFile = file
                 };
+                
             var serverPath = Server.MapPath("~/" + file.MediaPath);
             result.IsImage = _resizerService.IsImage(serverPath);
             result.Extension = Path.GetExtension(serverPath);
             if (!string.IsNullOrWhiteSpace(result.Extension))
                 result.Extension = result.Extension.Trim('.').ToLower();
-            result.RelatedPath = "/" + file.MediaPath.Replace(_siteRoot, "").Trim('/');
+            if (_siteRoot != "/")
+            {
+                result.RelatedPath = "/" + file.MediaPath.Replace(_siteRoot, "").Trim('/');
+            }
+            else
+            {
+                result.RelatedPath = file.MediaPath;
+            }
             try
             {
                 SetFileSizes(serverPath, result);
