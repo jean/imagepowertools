@@ -49,6 +49,8 @@ namespace Amba.ImagePowerTools.Models
                     
                 if (name == "descr")
                     return Description;
+                if (!_properties.ContainsKey(name))
+                    return string.Empty;
                 return (string)_properties[name];
             }
             set
