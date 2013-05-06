@@ -20,9 +20,9 @@
                 {
                     <div>
                         <div>Custom fields:</div> 
-                        @foreach (var customFiled in settings.CustomFieldsList)
+                        @foreach (var customFieldDefinition in settings.CustomFieldsList)
                         {
-                            <div> @customFiled.DisplayName: @image[customFiled.Name] </div>
+                            <div> @customFieldDefinition.DisplayName: @image[customFieldDefinition.Name] </div>
                         }
                     </div>
                 }
