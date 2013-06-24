@@ -13,7 +13,7 @@
         @foreach (var image in field.Images)
         {   
             <div class="image-item">
-                <a href="@Url.Content("~" + image.FilePath))" target="_blank">
+                <a href="@Url.Content("~" + image.FilePath)" target="_blank">
                     @Html.ResizedImage(image.FilePath, height:60, htmlAttributes: new { alt="", @class="pickerimage"}) 
                 </a>
                 @if (settings.CustomFieldsList.Any())
