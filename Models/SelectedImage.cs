@@ -9,6 +9,13 @@ namespace Amba.ImagePowerTools.Models
     {
         [JsonProperty(PropertyName = "file")]
         public string FilePath { get; set; }
+
+        [JsonProperty(PropertyName = "iptx_lon")]
+        public double? Longtitude { get; set; }
+
+        [JsonProperty(PropertyName = "iptx_lat")]
+        public double? Latitude { get; set; }
+
         [JsonProperty(PropertyName = "descr")]
         public string Description { get; set; }
 

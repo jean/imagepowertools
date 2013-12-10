@@ -8,11 +8,13 @@ using Amba.ImagePowerTools.Models;
 using Amba.ImagePowerTools.Services;
 using Amba.ImagePowerTools.Settings;
 using Amba.ImagePowerTools.ViewModels;
+using ExifLib;
 using Orchard;
 using Orchard.ContentManagement;
 using Orchard.ContentManagement.Drivers;
 using Orchard.ContentManagement.Handlers;
 using Amba.ImagePowerTools.Extensions;
+
 
 namespace Amba.ImagePowerTools.Drivers
 {
@@ -20,11 +22,13 @@ namespace Amba.ImagePowerTools.Drivers
     {
         private readonly IMediaFileSystemService _mediaFileSystemService;
         private readonly IPowerToolsSettingsService _settingsService;
+        private readonly ISelectedImageService _selectedImageService;
 
-        public ImageMultiPickerFieldDriver(IMediaFileSystemService mediaFileSystemService, IPowerToolsSettingsService settingsService)
+        public ImageMultiPickerFieldDriver(IMediaFileSystemService mediaFileSystemService, IPowerToolsSettingsService settingsService, ISelectedImageService selectedImageService)
         {
             _mediaFileSystemService = mediaFileSystemService;
             _settingsService = settingsService;
+            _selectedImageService = selectedImageService;
         }
 
         protected override DriverResult Display(ContentPart part, ImageMultiPickerField field, string displayType, dynamic shapeHelper)
@@ -85,6 +89,7 @@ namespace Amba.ImagePowerTools.Drivers
                     var uploadFolder = _mediaFileSystemService.GetContentItemUploadFolder(part.Id, field.Name);
                     Task.Factory.StartNew(() => _mediaFileSystemService.DeleteNotUsedFiles(uploadFolder, images));
                 }
+                field.Images = _selectedImageService.UpdateExifProperties(field.Images.ToList());
             }
             return Editor(part, field, shapeHelper);
         }

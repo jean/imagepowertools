@@ -24,5 +24,8 @@ namespace Amba.ImagePowerTools.ViewModels
         public long Size { get; set; }
 
         public string DisplayPath { get; set; }
+
+        public double? Lon { get; set; }
+        public double? Lat { get; set; }
     }
 }

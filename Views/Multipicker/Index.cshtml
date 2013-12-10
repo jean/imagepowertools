@@ -77,7 +77,7 @@
                                     <a href="@Url.Content("~" + file.SitePath)" target="_blank">
                                         @if (file.IsImage)
                                         {
-                                            <img src="@Url.Content("~/ipt/resize" + file.SitePath + "?width=100")" alt=""/>                                                                 
+                                            <img src="@Url.Content("~/ipt/resize" + file.SitePath + "?width=100")" alt="" />
                                         }
                                         else
                                         {
@@ -119,6 +119,13 @@
                                             <text>@file.Extension @T("file")</text>
                                         }
                                     </div>
+                                    @if (file.Lon.HasValue && file.Lat.HasValue)
+                                    {
+                                        <div>
+                                            <img src="@Url.Content("~/modules/Amba.ImagePowerTools/content/pointer.png")" height="12px" /> @string.Format("{0:0.000000}, {0:0.000000}", file.Lon, file.Lat)
+                                        </div>
+                                    }
+                                    
                                 </td>
                             </tr>        
                         }

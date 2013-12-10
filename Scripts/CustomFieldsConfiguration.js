@@ -45,6 +45,13 @@
             return true;
         };
 
+        $scope.nameIsNotReserved = function(fieldName) {
+            if (fieldName.match("^iptx_")) {
+                return false;
+            }
+            return true;
+        };
+
         $scope.nameIsNotEmpty = function(fieldName) {
             return $.trim(fieldName).length > 0;
         };

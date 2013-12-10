@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Hosting;
 using Amba.ImagePowerTools.Models;
 using Amba.ImagePowerTools.ViewModels;
+using ExifLib;
 using Orchard;
 using Orchard.Environment.Configuration;
 using Orchard.Logging;
@@ -251,11 +252,23 @@ namespace Amba.ImagePowerTools.Services
             try
             {
                 SetFileSizes(file);
+                SetLonLat(file);
             }
             catch
             {
             }
             return file;
+        }
+
+        private void SetLonLat(FileViewModel file)
+        {
+            var fileInfo = new FileInfo(file.ServerPath);
+            if (fileInfo.Extension.ToLower() == ".jpg")
+            {
+                var exifReader = new ExifReader(file.ServerPath);
+                file.Lat = exifReader.GetLat();
+                file.Lon = exifReader.GetLon();
+            }
         }
 
         private void SetFileSizes(FileViewModel file)

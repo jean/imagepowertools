@@ -54,6 +54,12 @@
     <Reference Include="AForge.Math">
       <HintPath>Dependencies\AForge.Math.dll</HintPath>
     </Reference>
+    <Reference Include="Amba">
+      <HintPath>Dependencies\Amba.dll</HintPath>
+    </Reference>
+    <Reference Include="ExifLib">
+      <HintPath>Dependencies\ExifLib.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Dependencies\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -90,6 +96,7 @@
     <Content Include="Content\file.png" />
     <Content Include="Content\image_not_found.jpg" />
     <Content Include="Content\pdf.png" />
+    <Content Include="Content\pointer.png" />
     <Content Include="Content\swf.png" />
     <Content Include="Scripts\angular-last.js" />
     <Content Include="Scripts\angular-last.min.js" />
@@ -149,6 +156,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\MultipickerController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="Extensions\ExifReaderExtensions.cs" />
     <Compile Include="Extensions\IntExtension.cs" />
     <Compile Include="ImageResizerFilters\BlurFilter.cs" />
     <Compile Include="ImageResizerFilters\GrayscaleFilter.cs" />
@@ -157,6 +165,7 @@
     <Compile Include="ResourceManifest.cs" />
     <Compile Include="Services\MediaFileSystemService.cs" />
     <Compile Include="Services\PowerToolsSettingsService.cs" />
+    <Compile Include="Services\SelectedImageService.cs" />
     <Compile Include="Services\SwfService.cs" />
     <Compile Include="Settings\CustomFieldDefinition.cs" />
     <Compile Include="Settings\ImageMultiPickerFieldEditorEvents.cs" />

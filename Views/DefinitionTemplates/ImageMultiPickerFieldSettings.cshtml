@@ -24,9 +24,10 @@
         <div data-ng-form data-name="form_@(id)"  class="add-custom-field-form" >
             <div>
                 <label>Unique Property Name:</label>
-                <input type="text" name="fieldName" data-ng-model="fieldName" ui-validate="{'duplicateName' : 'nameIsUniq($value)', 'nameIsFile':'nameIsNotFile($value)', 'isEmpty':'nameIsNotEmpty($value)' }" />
+                <input type="text" name="fieldName" data-ng-model="fieldName" ui-validate="{'duplicateName' : 'nameIsUniq($value)', 'nameIsFile':'nameIsNotFile($value)', 'nameIsReserved':'nameIsNotReserved($value)', 'isEmpty':'nameIsNotEmpty($value)' }" />
                 <span class="validation-error-message" data-ng-show="form_@(id).fieldName.$error.duplicateName">@T("Name is not unique")</span>
                 <span class="validation-error-message" data-ng-show="form_@(id).fieldName.$error.nameIsFile">@T("Name cannot be 'file'")</span>
+                <span class="validation-error-message" data-ng-show="form_@(id).fieldName.$error.nameIsFile">@T("Name cannot starts with 'iptx_'")</span>
             </div>
             <div>
                 <label>Display Name:</label>

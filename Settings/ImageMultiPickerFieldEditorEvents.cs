@@ -19,7 +19,7 @@ namespace Amba.ImagePowerTools.Settings
             }
         }
 
-        public override IEnumerable<TemplateViewModel> PartFieldEditorUpdate(ContentPartFieldDefinitionBuilder builder,                                                                 IUpdateModel updateModel)
+        public override IEnumerable<TemplateViewModel> PartFieldEditorUpdate(ContentPartFieldDefinitionBuilder builder, IUpdateModel updateModel)
         {
             if (builder.FieldType != "ImageMultiPickerField")
             {
