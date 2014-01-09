@@ -2,7 +2,7 @@
 AntiForgery: disabled
 Author: Alexey V. Ryazhskikh
 Website: http://imagepowertools.codeplex.com
-Version: 2.3.0
+Version: 2.3.1
 OrchardVersion: 1.7
 Category: Media
 Description: Image tools module for Orchard CMS

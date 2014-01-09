@@ -1,14 +1,10 @@
 ﻿@model Amba.ImagePowerTools.ViewModels.ImageMultiPickerFieldEditorViewModel
 @using Amba.ImagePowerTools.Extensions
 @{
-    Script.Include("angular-last.min.js").AtHead();
-    Script.Include("angular-ui.min.js").AtHead();
-    Script.Include("AmbaSortableList.js").AtHead();
-    Script.Include("MultipickerDashboard.js").AtHead();
-    Script.Include("ExtraEvents.js").AtHead();
-    Style.Include("dashboard.css").AtHead();
+    Script.Require("IPT_MultipickerDashboard").AtHead();
+    Style.Require("IPT_DashBoard").AtHead();
 
-    Script.Require("jQueryUI_Sortable").AtHead();
+    
     var pickerId = Guid.NewGuid().ToString("N").Substring(0, 6);
     var siteRoot = VirtualPathUtility.ToAbsolute("~/").TrimEnd('/');
 
