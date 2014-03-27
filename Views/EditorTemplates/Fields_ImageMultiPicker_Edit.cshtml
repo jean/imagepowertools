@@ -4,10 +4,8 @@
     Script.Require("IPT_MultipickerDashboard").AtHead();
     Style.Require("IPT_DashBoard").AtHead();
 
-    
     var pickerId = Guid.NewGuid().ToString("N").Substring(0, 6);
     var siteRoot = VirtualPathUtility.ToAbsolute("~/").TrimEnd('/');
-
 }
 <fieldset>
     <label>@Model.Field.DisplayName</label>
@@ -20,12 +18,12 @@
             </div>
             <input name="@Html.NameFor(x => x.Data)" type="hidden" value="{{data|json}}"/>  
             <div class="upload-wrapper" 
-                data-ng-class="dragonClass"
-                data-ee-dragenter="onDragEnter($event)"
-                data-ee-dragover="onDragOver($event)"
-                data-ee-dragleave="onDragLeave($event)"
-                data-ee-drop="onDrop($event)"
-            >     
+                 data-ng-class="dragonClass"
+                 data-ee-dragenter="onDragEnter($event)"
+                 data-ee-dragover="onDragOver($event)"
+                 data-ee-dragleave="onDragLeave($event)"
+                 data-ee-drop="onDrop($event)"
+                >     
                 <ul data-amba-sortable-list="{opacity: 0.5}" data-ng-model="data" class="table image-list">
                     <li class="table-row image-item" data-ng-repeat="image in data" >
                         <div class="table-cell image-preview" style="width:@(Model.Settings.PreviewWidth)px;">
@@ -77,6 +75,7 @@
             </div>
         </div>
     </div>
+    <span class="hint">@Model.Settings.Hint</span> 
 </fieldset>
 
 @using (Script.Foot())
