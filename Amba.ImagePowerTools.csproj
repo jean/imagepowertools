@@ -73,7 +73,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Dependencies\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\lib\newtonsoft.json\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -101,6 +101,7 @@
     <Content Include="Content\pdf.png" />
     <Content Include="Content\pointer.png" />
     <Content Include="Content\swf.png" />
+    <Content Include="logo.png" />
     <Content Include="Scripts\angular-last.js" />
     <Content Include="Scripts\angular-last.min.js" />
     <Content Include="Scripts\angular-ui.js" />
@@ -122,6 +123,7 @@
       <DependentUpon>fields-configuration.less</DependentUpon>
     </Content>
     <Content Include="Styles\img\folder.gif" />
+    <Content Include="Styles\img\loader.gif" />
     <Content Include="Styles\media-multipicker.css">
       <DependentUpon>media-multipicker.less</DependentUpon>
     </Content>
