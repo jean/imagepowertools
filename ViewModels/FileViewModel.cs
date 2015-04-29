@@ -1,6 +1,4 @@
-﻿using Orchard.Media.Models;
-
-namespace Amba.ImagePowerTools.ViewModels
+﻿namespace Amba.ImagePowerTools.ViewModels
 {
     public class FileViewModel
     {

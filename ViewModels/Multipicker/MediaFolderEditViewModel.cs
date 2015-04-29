@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Web;
 using Amba.ImagePowerTools.ViewModels.Admin;
-using Orchard.Media.Models;
 using Amba.ImagePowerTools.Extensions;
 
 namespace Amba.ImagePowerTools.ViewModels.Multipicker
